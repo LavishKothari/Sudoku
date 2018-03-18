@@ -46,15 +46,16 @@ public class GridUtils {
 	 * 
 	 * If any element is missing i.e.. is Sudoku.EMPTY_CELL then this method return
 	 * false
-	 * @param maxValue 
+	 * 
+	 * @param maxValue
 	 * @param list
 	 * 
 	 * @return
 	 */
 	public static boolean isStrictComplyingList(int maxValue, List<Integer> list) {
-		if(list.size()!=maxValue)
+		if (list.size() != maxValue)
 			return false;
-		
+
 		List<Integer> flag = new ArrayList<>(list.size());
 		while (flag.size() < list.size())
 			flag.add(0);
@@ -70,7 +71,9 @@ public class GridUtils {
 	 * 
 	 * If any element is missing i.e.. is Sudoku.EMPTY_CELL then that element is
 	 * ignored and has no effect on the return value of this method
-	 * @param maxValue TODO
+	 * 
+	 * @param maxValue
+	 *            TODO
 	 * @param list
 	 * 
 	 * @return
@@ -97,6 +100,51 @@ public class GridUtils {
 	public static int getInnerGridNumber(int dimensionOfGrid, int row, int col) {
 		int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 		return (row / dimensionOfInnerGrid) * dimensionOfInnerGrid + col / dimensionOfInnerGrid;
+	}
+
+	/**
+	 * This method is used to get the grid represented by the string. <br>
+	 * For example <br>
+	 * ....7..2.8.......6.1.2.5...9.54....8.........3....85.1...3.2.8.4.......9.7..6....
+	 * <br>
+	 * is <br>
+	 * 0 0 0 0 7 0 0 2 0<br>
+	 * 8 0 0 0 0 0 0 0 6<br>
+	 * 0 1 0 2 0 5 0 0 0<br>
+	 * 9 0 5 4 0 0 0 0 8<br>
+	 * 0 0 0 0 0 0 0 0 0<br>
+	 * 3 0 0 0 0 8 5 0 1<br>
+	 * 0 0 0 3 0 2 0 8 0<br>
+	 * 4 0 0 0 0 0 0 0 9<br>
+	 * 0 7 0 0 6 0 0 0 0<br>
+	 */
+	public static List<List<Integer>> getGridFromStringFormat(String str) {
+		int totalCells = str.length();
+		if (!NumberUtils.isPerfectSquare(totalCells))
+			throw new IllegalArgumentException("The String is not convertible to a sudoku");
+
+		List<List<Integer>> sudokuGrid = new ArrayList<>(9);
+		int dimension = (int) NumberUtils.getSqureRoot(totalCells);
+
+		for (int i = 0; i < dimension; i++) {
+			sudokuGrid.add(new ArrayList<>(9));
+			for (int j = 0; j < dimension; j++) {
+				sudokuGrid.get(i).add(getIthInteger(str, i * dimension + j));
+			}
+		}
+
+		Sudoku s = new Sudoku(sudokuGrid);
+		if (!s.isValid())
+			throw new IllegalArgumentException("The String is not convertible to a sudoku");
+
+		return sudokuGrid;
+	}
+
+	public static int getIthInteger(String str, int i) {
+		char c = str.charAt(i);
+		if (c == '.')
+			return 0;
+		return (int) c - (int) '0';
 	}
 
 }

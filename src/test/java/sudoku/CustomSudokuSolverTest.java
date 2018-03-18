@@ -8,12 +8,16 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CustomSudokuSolverTest {
 
 	private static Sudoku unsolvedSudoku;
 	private static List<List<Integer>> unsolvedSudokuGrid;
+
+	private static Sudoku unsolvedHardSudoku;
+	private static List<List<Integer>> hardSudokuGrid;
 
 	private static Sudoku solvedSudoku;
 	private static List<List<Integer>> solvedSudokuGrid;
@@ -49,6 +53,7 @@ public class CustomSudokuSolverTest {
 		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+
 	}
 
 	@Test
@@ -56,35 +61,78 @@ public class CustomSudokuSolverTest {
 		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+
 	}
 
 	@Test
 	public void pureRandomizedTestWithRandomSequenceList() {
 		List<Integer> sequenceList = new ArrayList<>();
-		for(int i=0;i<unsolvedSudoku.getDimensionOfGrid()*unsolvedSudoku.getDimensionOfGrid();i++)
+		for (int i = 0; i < unsolvedSudoku.getDimensionOfGrid() * unsolvedSudoku.getDimensionOfGrid(); i++)
 			sequenceList.add(i);
 		Collections.shuffle(sequenceList);
-		
+
 		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).sequenceList(sequenceList).solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+
 	}
-	
+
 	@Test
 	public void optimalSolveTest() {
-		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).selectOptimalCellOrderingList().solve();
+		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).selectOptimalCellOrderingList()
+				.solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+
 	}
-	
+
+	@Ignore
+	public void hardSudokuTest() {
+		boolean isSolved;
+		List<Integer> sequenceList = new ArrayList<>();
+		for (int i = 0; i < unsolvedSudoku.getDimensionOfGrid() * unsolvedSudoku.getDimensionOfGrid(); i++)
+			sequenceList.add(i);
+		Collections.shuffle(sequenceList);
+
+		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).solve();
+		Assert.assertTrue(isSolved);
+
+		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).solve();
+		Assert.assertTrue(isSolved);
+
+		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).sequenceList(sequenceList).solve();
+		Assert.assertTrue(isSolved);
+
+		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).selectOptimalCellOrderingList().solve();
+		Assert.assertTrue(isSolved);
+	}
+
 	public void refreshedUnsolvedSudoku() {
 		unsolvedSudokuGrid = getUnsolvedSudokuGrid();
 		unsolvedSudoku = new Sudoku(unsolvedSudokuGrid);
+
+		hardSudokuGrid = getHardSudokuGrid();
+		unsolvedHardSudoku = new Sudoku(hardSudokuGrid);
+	}
+
+	public List<List<Integer>> getHardSudokuGrid() {
+
+		List<List<Integer>> hardSudokuGrid = new ArrayList<>(9);
+
+		hardSudokuGrid.add(Arrays.asList(0, 0, 0, 0, 7, 0, 0, 2, 0));
+		hardSudokuGrid.add(Arrays.asList(8, 0, 0, 0, 0, 0, 0, 0, 6));
+		hardSudokuGrid.add(Arrays.asList(0, 1, 0, 2, 0, 5, 0, 0, 0));
+		hardSudokuGrid.add(Arrays.asList(9, 0, 5, 4, 0, 0, 0, 0, 8));
+		hardSudokuGrid.add(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0));
+		hardSudokuGrid.add(Arrays.asList(3, 0, 0, 0, 0, 8, 5, 0, 1));
+		hardSudokuGrid.add(Arrays.asList(0, 0, 0, 3, 0, 2, 0, 8, 0));
+		hardSudokuGrid.add(Arrays.asList(4, 0, 0, 0, 0, 0, 0, 0, 9));
+		hardSudokuGrid.add(Arrays.asList(0, 7, 0, 0, 6, 0, 0, 0, 0));
+		return hardSudokuGrid;
 	}
 
 	public List<List<Integer>> getUnsolvedSudokuGrid() {
-		List<List<Integer>> sampleUnsolvedSudokuGrid;
-		sampleUnsolvedSudokuGrid = new ArrayList<>(9);
+		List<List<Integer>> sampleUnsolvedSudokuGrid = new ArrayList<>(9);
 
 		sampleUnsolvedSudokuGrid.add(Arrays.asList(0, 0, 0, 2, 6, 0, 7, 0, 1));
 		sampleUnsolvedSudokuGrid.add(Arrays.asList(6, 8, 0, 0, 7, 0, 0, 9, 0));
