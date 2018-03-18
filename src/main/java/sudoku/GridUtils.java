@@ -1,5 +1,9 @@
 package sudoku;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +104,24 @@ public class GridUtils {
 	public static int getInnerGridNumber(int dimensionOfGrid, int row, int col) {
 		int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 		return (row / dimensionOfInnerGrid) * dimensionOfInnerGrid + col / dimensionOfInnerGrid;
+	}
+
+	/**
+	 * This method returns a list of all the grids that are constructible from the
+	 * given file
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<List<List<Integer>>> getGridsFromFile(String fileName) throws IOException {
+		List<List<List<Integer>>> grids = new ArrayList<>();
+
+		URL url = GridUtils.class.getClassLoader().getResource(fileName);
+		for (String currentString : Files.readAllLines(Paths.get(url.getPath()))) {
+			grids.add(getGridFromStringFormat(currentString));
+		}
+		return grids;
 	}
 
 	/**

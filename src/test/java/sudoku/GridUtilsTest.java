@@ -1,5 +1,6 @@
 package sudoku;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,8 +123,19 @@ public class GridUtilsTest {
 		hardSudokuGrid.add(Arrays.asList(0, 0, 0, 3, 0, 2, 0, 8, 0));
 		hardSudokuGrid.add(Arrays.asList(4, 0, 0, 0, 0, 0, 0, 0, 9));
 		hardSudokuGrid.add(Arrays.asList(0, 7, 0, 0, 6, 0, 0, 0, 0));
-		
+
 		Assert.assertEquals(hardSudokuGrid, GridUtils.getGridFromStringFormat(hardString));
+	}
+
+	@Test
+	public void getGridsFromFileTest() throws IOException {
+		List<String> fileNames = Arrays.asList("easy_puzzles.txt", "hard_puzzles.txt", "hardest_puzzles.txt");
+		for (final String currentFileName : fileNames) {
+			for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile(currentFileName)) {
+				Sudoku currentSudoku = new Sudoku(currentGrid);
+				Assert.assertTrue(currentSudoku.isValid());
+			}
+		}
 	}
 
 }
