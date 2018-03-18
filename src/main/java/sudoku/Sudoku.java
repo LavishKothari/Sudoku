@@ -134,7 +134,6 @@ public class Sudoku {
 
 	public void setCellValue(int row, int col, int value) {
 		grid.get(row).set(col, value);
-		
 	}
 
 }

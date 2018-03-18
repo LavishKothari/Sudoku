@@ -2,13 +2,16 @@ package sudoku;
 
 import java.util.List;
 
-public class NaiveSolver {
+final public class NaiveSolver {
+	private NaiveSolver() {
+		
+	}
 	public static boolean solve(Sudoku sudoku) {
 		return solveHelper(sudoku, 0);
 	}
 
 	private static boolean solveHelper(Sudoku sudoku, int currentCell) {
-		if (currentCell == sudoku.getDimensionOfGrid() * sudoku.getDimensionOfGrid() || sudoku.isSolved()) {
+		if (currentCell == sudoku.getDimensionOfGrid() * sudoku.getDimensionOfGrid()) {
 			return true;
 		}
 		int row = currentCell / sudoku.getDimensionOfGrid();
