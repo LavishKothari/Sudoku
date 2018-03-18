@@ -127,13 +127,24 @@ public class Sudoku {
 
 		List<Integer> resultList = new ArrayList<>();
 		for (int i = 0; i < dimensionOfGrid; i++)
-			resultList.add(i+1);
+			resultList.add(i + 1);
 
 		return resultList.stream().filter(e -> !elements.contains(e)).collect(Collectors.toList());
 	}
 
 	public void setCellValue(int row, int col, int value) {
 		grid.get(row).set(col, value);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getDimensionOfGrid(); i++) {
+			for (int j = 0; j < getDimensionOfGrid(); j++)
+				sb.append(getCellValue(i, j) + " ");
+			sb.append('\n');
+		}
+		return sb.toString();
 	}
 
 }

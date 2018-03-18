@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class CustomSudokuSolver {
+
+	private final static Logger logger = Logger.getLogger(CustomSudokuSolver.class);
+
 	/**
 	 * This field represents the sudoku to be solved.
 	 */
@@ -43,19 +48,22 @@ public class CustomSudokuSolver {
 		this.randomize = false;
 	}
 
-	
 	public CustomSudokuSolver randomize(boolean randomize) {
 		this.randomize = randomize;
 		return this;
 	}
-	
+
 	public CustomSudokuSolver sequenceList(List<Integer> sequenceList) {
 		this.sequenceList = sequenceList;
 		return this;
 	}
-	
+
 	public boolean solve() {
-		return solveHelper(0);
+		logger.info("solving the following sudoku: \n" + sudoku);
+		boolean solved = solveHelper(0);
+		logger.info("finished solving the following sudoku: \n" + sudoku);
+		return solved;
+
 	}
 
 	private boolean solveHelper(int currentIndex) {
