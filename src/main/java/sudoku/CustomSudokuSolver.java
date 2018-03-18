@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Stopwatch;
+
 public class CustomSudokuSolver {
 
 	private final static Logger logger = Logger.getLogger(CustomSudokuSolver.class);
@@ -58,10 +60,49 @@ public class CustomSudokuSolver {
 		return this;
 	}
 
+	/**
+	 * this method assigns the sequenceList to a list which is optimal in terms of
+	 * (greedily) minimum number of back tracking calls.
+	 * 
+	 * @return
+	 */
+	public CustomSudokuSolver selectOptimalCellOrderingList() {
+		List<List<Integer>> buckets = new ArrayList<>(9);
+
+		for (int i = 0; i < 9; i++) {
+			buckets.add(new ArrayList<Integer>());
+		}
+
+		for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
+			for (int j = 0; j < sudoku.getDimensionOfGrid(); j++) {
+				List<Integer> currentList = sudoku.getPossibleValues(i, j);
+				buckets.get(currentList.size()).add(i*sudoku.getDimensionOfGrid() + j);
+			}
+		}
+		
+		sequenceList = new ArrayList<>();
+		for(int i=0;i<buckets.size();i++) {
+			for(int j=0;j<buckets.get(i).size();j++) {
+				sequenceList.add(buckets.get(i).get(j));
+			}
+		}
+		
+		return this;
+	}
+
 	public boolean solve() {
-		logger.info("solving the following sudoku: \n" + sudoku);
+
+		logger.info("==== Solver Report ====");
+		logger.info(this);
+		Stopwatch startTimer = Stopwatch.createStarted();
+
 		boolean solved = solveHelper(0);
-		logger.info("finished solving the following sudoku: \n" + sudoku);
+
+		Stopwatch endTimer = startTimer.stop();
+		logger.info("finished solving. The solved sudoku is:\n" + sudoku);
+		logger.info("Exceution Time is: " + endTimer);
+		logger.info("==== Solver Report Ends ====");
+
 		return solved;
 
 	}
@@ -91,6 +132,12 @@ public class CustomSudokuSolver {
 			sudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
 		}
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "CustomSudokuSolver [sudoku=\n" + sudoku + "\nsequenceList=\n" + sequenceList + "\nrandomize=\n"
+				+ randomize + "]";
 	}
 
 }

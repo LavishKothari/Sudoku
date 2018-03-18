@@ -2,6 +2,7 @@ package sudoku;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -62,8 +63,16 @@ public class CustomSudokuSolverTest {
 		List<Integer> sequenceList = new ArrayList<>();
 		for(int i=0;i<unsolvedSudoku.getDimensionOfGrid()*unsolvedSudoku.getDimensionOfGrid();i++)
 			sequenceList.add(i);
+		Collections.shuffle(sequenceList);
 		
 		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).sequenceList(sequenceList).solve();
+		Assert.assertTrue(isSolved);
+		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+	}
+	
+	@Test
+	public void optimalSolveTest() {
+		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).selectOptimalCellOrderingList().solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
 	}
