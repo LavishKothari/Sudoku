@@ -1,7 +1,5 @@
 package sudoku;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,14 +11,14 @@ import org.junit.Test;
 
 public class CustomSudokuSolverTest {
 
-	private Sudoku unsolvedSudoku;
-	private List<List<Integer>> unsolvedSudokuGrid;
+	private static Sudoku unsolvedSudoku;
+	private static List<List<Integer>> unsolvedSudokuGrid;
 
-	private Sudoku solvedSudoku;
-	private List<List<Integer>> solvedSudokuGrid;
+	private static Sudoku solvedSudoku;
+	private static List<List<Integer>> solvedSudokuGrid;
 
 	@BeforeClass
-	public void setupForClass() {
+	public static void setupForClass() {
 
 		/*
 		 * The solved version of sudoku will always remain same.
@@ -39,30 +37,42 @@ public class CustomSudokuSolverTest {
 
 		solvedSudoku = new Sudoku(solvedSudokuGrid);
 	}
-	
+
 	@Before
-	public void setupBeforeEachTest() {		
+	public void setupBeforeEachTest() {
 		refreshedUnsolvedSudoku();
 	}
 
 	@Test
 	public void solveNaiveTest() {
-		CustomSudokuSolver customSudokuSolver = new CustomSudokuSolver(unsolvedSudoku);
-		boolean isSolved = customSudokuSolver.solve();
+		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).solve();
 		Assert.assertTrue(isSolved);
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
 	}
 
 	@Test
 	public void solveRandomizedTest() {
+		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).solve();
+		Assert.assertTrue(isSolved);
+		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
+	}
+
+	@Test
+	public void pureRandomizedTestWithRandomSequenceList() {
+		List<Integer> sequenceList = new ArrayList<>();
+		for(int i=0;i<unsolvedSudoku.getDimensionOfGrid()*unsolvedSudoku.getDimensionOfGrid();i++)
+			sequenceList.add(i);
 		
+		boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).sequenceList(sequenceList).solve();
+		Assert.assertTrue(isSolved);
+		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
 	}
 	
 	public void refreshedUnsolvedSudoku() {
 		unsolvedSudokuGrid = getUnsolvedSudokuGrid();
 		unsolvedSudoku = new Sudoku(unsolvedSudokuGrid);
 	}
-	
+
 	public List<List<Integer>> getUnsolvedSudokuGrid() {
 		List<List<Integer>> sampleUnsolvedSudokuGrid;
 		sampleUnsolvedSudokuGrid = new ArrayList<>(9);
@@ -78,6 +88,6 @@ public class CustomSudokuSolverTest {
 		sampleUnsolvedSudokuGrid.add(Arrays.asList(7, 0, 3, 0, 1, 8, 0, 0, 0));
 
 		return sampleUnsolvedSudokuGrid;
-		
+
 	}
 }

@@ -43,18 +43,17 @@ public class CustomSudokuSolver {
 		this.randomize = false;
 	}
 
-	public CustomSudokuSolver(Sudoku sudoku, List<Integer> sequenceList) {
-		this.sudoku = sudoku;
-		this.sequenceList = sequenceList;
-		this.randomize = false;
-	}
-
-	public CustomSudokuSolver(Sudoku sudoku, List<Integer> sequenceList, boolean randomize) {
-		this.sudoku = sudoku;
-		this.sequenceList = sequenceList;
+	
+	public CustomSudokuSolver randomize(boolean randomize) {
 		this.randomize = randomize;
+		return this;
 	}
-
+	
+	public CustomSudokuSolver sequenceList(List<Integer> sequenceList) {
+		this.sequenceList = sequenceList;
+		return this;
+	}
+	
 	public boolean solve() {
 		return solveHelper(0);
 	}
