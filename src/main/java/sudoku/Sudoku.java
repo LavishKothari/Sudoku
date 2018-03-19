@@ -76,8 +76,9 @@ public class Sudoku {
 
 	/**
 	 * 
-	 * @return The index number of the cell in the whole sudoku grid The cells are
-	 *         indexed from 0
+	 * @return The index number of the cell in the whole sudoku grid that has
+	 *         minimum number of possibilities that can be filled in that cell. The
+	 *         cells are indexed from 0
 	 * 
 	 *         For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
 	 */
@@ -86,7 +87,7 @@ public class Sudoku {
 		for (int i = 0; i < dimensionOfGrid; i++) {
 			for (int j = 0; j < dimensionOfGrid; j++) {
 				int currentListSize = getPossibleValues(i, j).size();
-				if (currentListSize < minListSize) {
+				if (currentListSize != 0 && currentListSize < minListSize) {
 					minListSize = currentListSize;
 					minCounter = counter;
 					if (minListSize == 1)
@@ -96,6 +97,28 @@ public class Sudoku {
 			}
 		}
 		return minCounter;
+	}
+
+	/**
+	 * 
+	 * @return The index number of the cell in the whole sudoku grid that has
+	 *         exactly one possibility that can be filled in. If there is no such
+	 *         cell, -1 is returned. The cells are indexed from 0.
+	 * 
+	 *         For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
+	 */
+	public int getCellWithExactlyOnePossibility() {
+		int counter = 0;
+		for (int i = 0; i < dimensionOfGrid; i++) {
+			for (int j = 0; j < dimensionOfGrid; j++) {
+				int currentListSize = getPossibleValues(i, j).size();
+				if (currentListSize == 1)
+					return counter;
+
+				counter++;
+			}
+		}
+		return -1;
 	}
 
 	/**
@@ -112,7 +135,7 @@ public class Sudoku {
 	 */
 	public List<Integer> getPossibleValues(int row, int col) {
 		if (grid.get(row).get(col) != GridUtils.EMPTY_CELL)
-			return Arrays.asList(grid.get(row).get(col));
+			return Arrays.asList();
 
 		List<Integer> rowList = GridUtils.getListOfRow(grid, row);
 		List<Integer> colList = GridUtils.getListOfColumn(grid, col);
@@ -147,5 +170,4 @@ public class Sudoku {
 		return sb.toString();
 	}
 
-	
 }

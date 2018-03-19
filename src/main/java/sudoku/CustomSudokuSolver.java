@@ -36,6 +36,13 @@ public class CustomSudokuSolver {
 	private boolean randomize;
 
 	/**
+	 * This field, when true, signifies that just before the recursive call the
+	 * solver should recalculate the cell number that has least number of
+	 * possibilities that can be filled in this cell.
+	 */
+	private boolean alwaysCalculatingCellWithLeastPossibility;
+
+	/**
 	 * This constructor represents the configuration related a very naive sudoku
 	 * solver. This don't include any concept of randomization while solving
 	 * 
@@ -55,6 +62,12 @@ public class CustomSudokuSolver {
 		return this;
 	}
 
+	public CustomSudokuSolver alwaysCalculatingCellWithLeastPossibility(
+			boolean alwaysCalculatingCellWithLeastPossibility) {
+		this.alwaysCalculatingCellWithLeastPossibility = alwaysCalculatingCellWithLeastPossibility;
+		return this;
+	}
+
 	public CustomSudokuSolver sequenceList(List<Integer> sequenceList) {
 		this.sequenceList = sequenceList;
 		return this;
@@ -66,7 +79,7 @@ public class CustomSudokuSolver {
 	 * 
 	 * @return
 	 */
-	public CustomSudokuSolver selectOptimalCellOrderingList() {
+	public CustomSudokuSolver selectInitialOptimalCellOrderingList() {
 		List<List<Integer>> buckets = new ArrayList<>(9);
 
 		for (int i = 0; i < 9; i++) {
@@ -76,23 +89,23 @@ public class CustomSudokuSolver {
 		for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
 			for (int j = 0; j < sudoku.getDimensionOfGrid(); j++) {
 				List<Integer> currentList = sudoku.getPossibleValues(i, j);
-				buckets.get(currentList.size()).add(i*sudoku.getDimensionOfGrid() + j);
+				buckets.get(currentList.size()).add(i * sudoku.getDimensionOfGrid() + j);
 			}
 		}
-		
+
 		sequenceList = new ArrayList<>();
-		for(int i=0;i<buckets.size();i++) {
-			for(int j=0;j<buckets.get(i).size();j++) {
+		for (int i = 0; i < buckets.size(); i++) {
+			for (int j = 0; j < buckets.get(i).size(); j++) {
 				sequenceList.add(buckets.get(i).get(j));
 			}
 		}
-		
+
 		return this;
 	}
 
 	public boolean solve() {
 
-		logger.info("==== Solver Report ====");
+		logger.info("\n================================   Solver Report ================================ ");
 		logger.info(this);
 		Stopwatch startTimer = Stopwatch.createStarted();
 
@@ -101,7 +114,7 @@ public class CustomSudokuSolver {
 		Stopwatch endTimer = startTimer.stop();
 		logger.info("finished solving. The solved sudoku is:\n" + sudoku);
 		logger.info("Exceution Time is: " + endTimer);
-		logger.info("==== Solver Report Ends ====");
+		logger.info("\n================================ Solver Report Ends ================================");
 
 		return solved;
 
@@ -126,6 +139,18 @@ public class CustomSudokuSolver {
 		}
 		for (final int currentValue : possibleValues) {
 			sudoku.setCellValue(row, col, currentValue);
+			/*
+			 * The following if basically for updating the sequence list so that it now
+			 * reflects the optimal sequence at this moment.
+			 */
+			if (alwaysCalculatingCellWithLeastPossibility
+					&& currentIndex + 1 < sudoku.getDimensionOfGrid() * sudoku.getDimensionOfGrid()) {
+				int nextIndexShouldBe = sudoku.getCellWithLeastPossibility();
+				int swapIndex1 = sequenceList.indexOf(nextIndexShouldBe);
+				int swapIndex2 = currentIndex + 1;
+
+				Collections.swap(sequenceList, swapIndex1, swapIndex2);
+			}
 			if (solveHelper(currentIndex + 1))
 				return true;
 			// backtracking
@@ -137,7 +162,8 @@ public class CustomSudokuSolver {
 	@Override
 	public String toString() {
 		return "CustomSudokuSolver [sudoku=\n" + sudoku + "\nsequenceList=\n" + sequenceList + "\nrandomize=\n"
-				+ randomize + "]";
+				+ randomize + "\nalwaysCalculatingCellWithLeastPossibility=\n"
+				+ alwaysCalculatingCellWithLeastPossibility + "]";
 	}
 
 }
