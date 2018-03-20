@@ -148,8 +148,12 @@ public class CustomSudokuSolver {
 				int nextIndexShouldBe = sudoku.getCellWithLeastPossibility();
 				int swapIndex1 = sequenceList.indexOf(nextIndexShouldBe);
 				int swapIndex2 = currentIndex + 1;
-
-				Collections.swap(sequenceList, swapIndex1, swapIndex2);
+				/*
+				 * swapIndex1 can be less that 0 when the sudoku is completely filled and
+				 * sudoku.getCellWithLeastPossibility() returns -1
+				 */
+				if (swapIndex1 > 0)
+					Collections.swap(sequenceList, swapIndex1, swapIndex2);
 			}
 			if (solveHelper(currentIndex + 1))
 				return true;

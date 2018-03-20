@@ -15,6 +15,10 @@ public class Sudoku {
 	private final static Logger logger = Logger.getLogger(Sudoku.class);
 
 	private final List<List<Integer>> grid;
+	/**
+	 * The functionality corresponding to the cachedSolvedGrid is to be implemented.
+	 */
+	// private final List<List<Integer>> cachedSolvedGrid;
 	private final int dimensionOfGrid;
 	private final int dimensionOfInnerGrid;
 
@@ -86,7 +90,10 @@ public class Sudoku {
 	 *         minimum number of possibilities that can be filled in that cell. The
 	 *         cells are indexed from 0. This method returns -1 when all the cells
 	 *         are filled and there is no cell that is empty, so no meaning of least
-	 *         number of possibilities
+	 *         number of possibilities. This method also returns -1 when there is no
+	 *         possibility available to be filled in even if the cell is empty. This
+	 *         situation can arise when the sudoku is not correctly filled and at
+	 *         the current cell you have no choice of digit to be filled in.
 	 * 
 	 *         For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
 	 */
@@ -95,7 +102,7 @@ public class Sudoku {
 		for (int i = 0; i < dimensionOfGrid; i++) {
 			for (int j = 0; j < dimensionOfGrid; j++) {
 				int currentListSize = getPossibleValues(i, j).size();
-				if (currentListSize != 0 && currentListSize < minListSize) {
+				if (currentListSize > 0 && currentListSize < minListSize) {
 					minListSize = currentListSize;
 					minCounter = counter;
 					if (minListSize == 1)
@@ -139,10 +146,11 @@ public class Sudoku {
 	 * 
 	 * @param row
 	 * @param col
-	 * @return
+	 * @return Returns a list of possibilities that can be filled in this cell. If
+	 *         the cell is already filled returns an empty list.
 	 */
 	public List<Integer> getPossibleValues(int row, int col) {
-		if (grid.get(row).get(col) != GridUtils.EMPTY_CELL)
+		if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL)
 			return Arrays.asList();
 
 		List<Integer> rowList = GridUtils.getListOfRow(grid, row);
@@ -179,9 +187,15 @@ public class Sudoku {
 	 *         value 0 if it has no solution.
 	 */
 	private static int uniqueSolutionDecider(Sudoku tempSudoku, int currentCellNumber) {
-		if (currentCellNumber == -1) {
+		if (currentCellNumber == -1 && tempSudoku.isSolved()) {
 			logger.info("One possible solution = \n" + tempSudoku);
 			return 1;
+		} else if (currentCellNumber == -1) {
+			/*
+			 * definitely currentCellNumber is -1 because of some inconsistent state in
+			 * sudoku that occurred during backtracking
+			 */
+			return 0;
 		}
 
 		int row = currentCellNumber / tempSudoku.getDimensionOfGrid();

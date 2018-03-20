@@ -61,4 +61,13 @@ public class SudokuTest {
 	public void hasUniqueSolutionTest() {
 		Assert.assertFalse(uniqueTestSudoku.hasUniqueSolution());
 	}
+	
+	@Test
+	public void getCellWithLeastPossibilityTest() {
+		// because the sudoku is completely filled
+		Assert.assertEquals(-1, sudoku.getCellWithLeastPossibility());
+		
+		// because the sudoku is not completely filled 
+		Assert.assertTrue(uniqueTestSudoku.getCellWithLeastPossibility() != -1);
+	}
 }
