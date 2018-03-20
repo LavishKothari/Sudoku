@@ -169,4 +169,15 @@ public class GridUtils {
 		return (int) c - (int) '0';
 	}
 
+	public static List<List<Integer>> getClonedGrid(final List<List<Integer>> grid) {
+		List<List<Integer>> result = new ArrayList<>(grid.size());
+		for (int i = 0; i < grid.size(); i++) {
+			result.add(new ArrayList<Integer>(grid.get(i).size()));
+			for (int j = 0; j < grid.size(); j++) {
+				result.get(i).add(grid.get(i).get(j));
+			}
+		}
+		return result;
+	}
+
 }

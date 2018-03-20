@@ -2,12 +2,18 @@ package sudoku;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 public class Sudoku {
+
+	private final static Logger logger = Logger.getLogger(Sudoku.class);
+
 	private final List<List<Integer>> grid;
 	private final int dimensionOfGrid;
 	private final int dimensionOfInnerGrid;
@@ -78,12 +84,14 @@ public class Sudoku {
 	 * 
 	 * @return The index number of the cell in the whole sudoku grid that has
 	 *         minimum number of possibilities that can be filled in that cell. The
-	 *         cells are indexed from 0
+	 *         cells are indexed from 0. This method returns -1 when all the cells
+	 *         are filled and there is no cell that is empty, so no meaning of least
+	 *         number of possibilities
 	 * 
 	 *         For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
 	 */
 	public int getCellWithLeastPossibility() {
-		int counter = 0, minCounter = 0, minListSize = Integer.MAX_VALUE;
+		int counter = 0, minCounter = -1, minListSize = Integer.MAX_VALUE;
 		for (int i = 0; i < dimensionOfGrid; i++) {
 			for (int j = 0; j < dimensionOfGrid; j++) {
 				int currentListSize = getPossibleValues(i, j).size();
@@ -155,8 +163,57 @@ public class Sudoku {
 		return resultList.stream().filter(e -> !elements.contains(e)).collect(Collectors.toList());
 	}
 
+	public boolean hasUniqueSolution() {
+		List<List<Integer>> tempGrid = GridUtils.getClonedGrid(grid);
+		Sudoku tempSudoku = new Sudoku(tempGrid);
+		int solutions = uniqueSolutionDecider(tempSudoku, tempSudoku.getCellWithLeastPossibility());
+		return solutions == 1;
+	}
+
+	/**
+	 * 
+	 * @param tempSudoku
+	 * @param currentCellNumber
+	 * @return This function return 1 if the sudoku has a unique solution and it
+	 *         returns a value greater than 1 if it has multiple solution and a
+	 *         value 0 if it has no solution.
+	 */
+	private static int uniqueSolutionDecider(Sudoku tempSudoku, int currentCellNumber) {
+		if (currentCellNumber == -1) {
+			logger.info("One possible solution = \n" + tempSudoku);
+			return 1;
+		}
+
+		int row = currentCellNumber / tempSudoku.getDimensionOfGrid();
+		int col = currentCellNumber % tempSudoku.getDimensionOfGrid();
+		List<Integer> possibleValues = tempSudoku.getPossibleValues(row, col);
+		Collections.shuffle(possibleValues);
+		int solutions = 0;
+		for (final Integer currentValue : possibleValues) {
+			tempSudoku.setCellValue(row, col, currentValue);
+
+			int nextCellNumber = tempSudoku.getCellWithLeastPossibility();
+			solutions += uniqueSolutionDecider(tempSudoku, nextCellNumber);
+			if (solutions > 1) {
+				return 2;
+			}
+
+			tempSudoku.clearCell(row, col);
+
+		}
+		// here the value of soutions will either be 0 or 1
+		// clearing the cell is an important thing to do before backtracking
+		tempSudoku.clearCell(row, col);
+		return solutions;
+
+	}
+
 	public void setCellValue(int row, int col, int value) {
 		grid.get(row).set(col, value);
+	}
+
+	public void clearCell(int row, int col) {
+		setCellValue(row, col, GridUtils.EMPTY_CELL);
 	}
 
 	@Override
