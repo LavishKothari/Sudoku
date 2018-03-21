@@ -43,6 +43,13 @@ public class CustomSudokuSolver {
 	private boolean alwaysCalculatingCellWithLeastPossibility;
 
 	/**
+	 * This field represents the timeout time when searching for a solution (or
+	 * backtracking) is stopped. A value of 0 (default) indicates indefinite
+	 * processing
+	 */
+	private long backtrackingTimeOut;
+
+	/**
 	 * This constructor represents the configuration related a very naive sudoku
 	 * solver. This don't include any concept of randomization while solving
 	 * 
@@ -73,6 +80,11 @@ public class CustomSudokuSolver {
 		return this;
 	}
 
+	public CustomSudokuSolver backtrackingTimeOut(long backtrackingTimeOut) {
+		this.backtrackingTimeOut = backtrackingTimeOut;
+		return this;
+	}
+
 	/**
 	 * this method assigns the sequenceList to a list which is optimal in terms of
 	 * (greedily) minimum number of back tracking calls.
@@ -80,9 +92,9 @@ public class CustomSudokuSolver {
 	 * @return
 	 */
 	public CustomSudokuSolver selectInitialOptimalCellOrderingList() {
-		List<List<Integer>> buckets = new ArrayList<>(9);
+		List<List<Integer>> buckets = new ArrayList<>(10);
 
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i <= 9; i++) {
 			buckets.add(new ArrayList<Integer>());
 		}
 
@@ -103,62 +115,83 @@ public class CustomSudokuSolver {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @return Returns true if the sudoku is solved It may be possible that because
+	 *         of backtrackingTimeOut, the sudoku is not solved even if the solution
+	 *         is possible. If the return value is false, then the original sudoku
+	 *         is intact and the values already filled in at the starting of this
+	 *         method are not altered at all.
+	 */
 	public boolean solve() {
 
 		logger.info("\n================================   Solver Report ================================ ");
 		logger.info(this);
-		Stopwatch startTimer = Stopwatch.createStarted();
+		long startTimer = System.currentTimeMillis();
 
-		boolean solved = solveHelper(0);
+		Sudoku tempSudoku = sudoku.getClonedSudoku();
+		boolean solved = solveHelper(tempSudoku, 0, startTimer);
 
-		Stopwatch endTimer = startTimer.stop();
-		logger.info("finished solving. The solved sudoku is:\n" + sudoku);
-		logger.info("Exceution Time is: " + endTimer);
-		logger.info("\n================================ Solver Report Ends ================================");
-
+		if (solved) {
+			long endTimer = System.currentTimeMillis();
+			logger.info("finished solving. The solved sudoku is:\n" + sudoku);
+			logger.info("Exceution Time is: " + (endTimer - startTimer) + " ms");
+			logger.info("\n================================ Solver Report Ends ================================");
+		}
+		if (solved) {
+			for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
+				for (int j = 0; j < sudoku.getDimensionOfGrid(); j++) {
+					int value = tempSudoku.getCellValue(i, j);
+					sudoku.setCellValue(i, j, value);
+				}
+			}
+		}
 		return solved;
 
 	}
 
-	private boolean solveHelper(int currentIndex) {
-		if (currentIndex == sudoku.getDimensionOfGrid() * sudoku.getDimensionOfGrid()) {
+	private boolean solveHelper(Sudoku currentSudoku, int currentIndex, long startTimer) {
+		if (backtrackingTimeOut != 0 &&  System.currentTimeMillis() - startTimer > backtrackingTimeOut) {
+			return false;
+		}
+		if (currentIndex == currentSudoku.getDimensionOfGrid() * currentSudoku.getDimensionOfGrid()) {
 			return true;
 		}
 		int currentCell = sequenceList.get(currentIndex);
 
-		int row = currentCell / sudoku.getDimensionOfGrid();
-		int col = currentCell % sudoku.getDimensionOfGrid();
+		int row = currentCell / currentSudoku.getDimensionOfGrid();
+		int col = currentCell % currentSudoku.getDimensionOfGrid();
 
-		if (sudoku.getCellValue(row, col) != GridUtils.EMPTY_CELL)
-			return solveHelper(currentIndex + 1);
+		if (currentSudoku.getCellValue(row, col) != GridUtils.EMPTY_CELL)
+			return solveHelper(currentSudoku, currentIndex + 1, startTimer);
 
-		List<Integer> possibleValues = sudoku.getPossibleValues(row, col);
+		List<Integer> possibleValues = currentSudoku.getPossibleValues(row, col);
 		if (randomize) {
 			// shuffling the list of possible values and then iterating over them
 			Collections.shuffle(possibleValues);
 		}
 		for (final int currentValue : possibleValues) {
-			sudoku.setCellValue(row, col, currentValue);
+			currentSudoku.setCellValue(row, col, currentValue);
 			/*
 			 * The following if basically for updating the sequence list so that it now
 			 * reflects the optimal sequence at this moment.
 			 */
 			if (alwaysCalculatingCellWithLeastPossibility
-					&& currentIndex + 1 < sudoku.getDimensionOfGrid() * sudoku.getDimensionOfGrid()) {
-				int nextIndexShouldBe = sudoku.getCellWithLeastPossibility();
+					&& currentIndex + 1 < currentSudoku.getDimensionOfGrid() * currentSudoku.getDimensionOfGrid()) {
+				int nextIndexShouldBe = currentSudoku.getCellWithLeastPossibility();
 				int swapIndex1 = sequenceList.indexOf(nextIndexShouldBe);
 				int swapIndex2 = currentIndex + 1;
 				/*
 				 * swapIndex1 can be less that 0 when the sudoku is completely filled and
-				 * sudoku.getCellWithLeastPossibility() returns -1
+				 * currentSudoku.getCellWithLeastPossibility() returns -1
 				 */
 				if (swapIndex1 > 0)
 					Collections.swap(sequenceList, swapIndex1, swapIndex2);
 			}
-			if (solveHelper(currentIndex + 1))
+			if (solveHelper(currentSudoku, currentIndex + 1, startTimer))
 				return true;
 			// backtracking
-			sudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
+			currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
 		}
 		return false;
 	}

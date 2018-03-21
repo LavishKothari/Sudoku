@@ -180,4 +180,41 @@ public class GridUtils {
 		return result;
 	}
 
+	public static String toString(List<List<Integer>> grid) {
+		StringBuilder sb = new StringBuilder();
+		int n = grid.size();
+		int rootN = (int) NumberUtils.getSqureRoot(n);
+		for (int i = 0; i < 2 * n + 7; i++) {
+			sb.append('-');
+		}
+		sb.append('\n');
+
+		for (int i = 0; i < n; i++) {
+			if (i != 0 && i % rootN == 0) {
+				sb.append("| ");
+				for (int x = 0; x < 2 * n + 4; x++) {
+					if (x == 2 * rootN || x == 4 * rootN + 2)
+						sb.append('+');
+					else
+						sb.append('-');
+				}
+				sb.append("|\n");
+			}
+			
+			sb.append("| ");
+			for (int j = 0; j < n; j++) {
+				if(j!=0 && j%rootN==0)
+					sb.append("| ");
+				sb.append(grid.get(i).get(j));
+				sb.append(' ');
+			}
+			sb.append("|\n");
+		}
+		for (int i = 0; i < 2 * n + 7; i++) {
+			sb.append('-');
+		}
+		sb.append('\n');
+		return sb.toString();
+	}
+
 }

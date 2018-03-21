@@ -172,10 +172,14 @@ public class Sudoku {
 	}
 
 	public boolean hasUniqueSolution() {
-		List<List<Integer>> tempGrid = GridUtils.getClonedGrid(grid);
-		Sudoku tempSudoku = new Sudoku(tempGrid);
+		Sudoku tempSudoku = getClonedSudoku();
 		int solutions = uniqueSolutionDecider(tempSudoku, tempSudoku.getCellWithLeastPossibility());
 		return solutions == 1;
+	}
+	
+	public Sudoku getClonedSudoku() {
+		List<List<Integer>> tempGrid = GridUtils.getClonedGrid(grid);
+		return new Sudoku(tempGrid);		
 	}
 
 	/**
@@ -232,13 +236,30 @@ public class Sudoku {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < getDimensionOfGrid(); i++) {
-			for (int j = 0; j < getDimensionOfGrid(); j++)
-				sb.append(getCellValue(i, j) + " ");
-			sb.append('\n');
-		}
-		return sb.toString();
+		return GridUtils.toString(grid);
 	}
-
+	
+	/**
+	 * The following method generates a random completely filled valid sudoku.
+	 * @param n, the dimension of grid
+	 * @return
+	 */
+	public static Sudoku generateRandomCompletelyFilledSudoku(int n) {
+		if(!NumberUtils.isPerfectSquare(n)) {
+			throw new IllegalArgumentException("The dimension of the sudoku grid should be a perfect square");
+		}
+		List<List<Integer>> grid = new ArrayList<>(n);
+		for (int i = 0; i < n; i++) {
+			grid.add(new ArrayList<Integer>(n));
+			for (int j = 0; j < n; j++) {
+				grid.get(i).add(GridUtils.EMPTY_CELL);
+			}
+		}
+		Sudoku sudoku = new Sudoku(grid);
+		while(!sudoku.isSolved()) {
+			new CustomSudokuSolver(sudoku).alwaysCalculatingCellWithLeastPossibility(true).randomize(true)
+				.selectInitialOptimalCellOrderingList().backtrackingTimeOut(1000).solve();
+		}
+		return sudoku;
+	}
 }
