@@ -1,6 +1,7 @@
 package sudoku.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class NumberUtils {
@@ -47,6 +48,7 @@ public final class NumberUtils {
 		List<Integer> resultList = new ArrayList<>(to - from + 1);
 		for (int i = from; i <= to; i++)
 			resultList.add(i);
+		Collections.shuffle(resultList);
 		return resultList;
 	}
 

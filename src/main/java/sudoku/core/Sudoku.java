@@ -174,15 +174,19 @@ public class Sudoku {
 		return resultList.stream().filter(e -> !elements.contains(e)).collect(Collectors.toList());
 	}
 
+	/**
+	 * this function don't alters the original sudoku
+	 * @return <code>true</code> if this sudoku has a unique solution
+	 */
 	public boolean hasUniqueSolution() {
 		Sudoku tempSudoku = getClonedSudoku();
 		int solutions = uniqueSolutionDecider(tempSudoku, tempSudoku.getCellWithLeastPossibility());
 		return solutions == 1;
 	}
-	
+
 	public Sudoku getClonedSudoku() {
 		List<List<Integer>> tempGrid = GridUtils.getClonedGrid(grid);
-		return new Sudoku(tempGrid);		
+		return new Sudoku(tempGrid);
 	}
 
 	/**
@@ -241,14 +245,16 @@ public class Sudoku {
 	public String toString() {
 		return GridUtils.toString(grid);
 	}
-	
+
 	/**
 	 * The following method generates a random completely filled valid sudoku.
-	 * @param n, the dimension of grid
+	 * 
+	 * @param n,
+	 *            the dimension of grid
 	 * @return
 	 */
 	public static Sudoku generateRandomCompletelyFilledSudoku(int n) {
-		if(!NumberUtils.isPerfectSquare(n)) {
+		if (!NumberUtils.isPerfectSquare(n)) {
 			throw new IllegalArgumentException("The dimension of the sudoku grid should be a perfect square");
 		}
 		List<List<Integer>> grid = new ArrayList<>(n);
@@ -259,10 +265,33 @@ public class Sudoku {
 			}
 		}
 		Sudoku sudoku = new Sudoku(grid);
-		while(!sudoku.isSolved()) {
+		while (!sudoku.isSolved()) {
 			new CustomSudokuSolver(sudoku).alwaysCalculatingCellWithLeastPossibility(true).randomize(true)
-				.selectInitialOptimalCellOrderingList().backtrackingTimeOut(1000).solve();
+					.selectInitialOptimalCellOrderingList().backtrackingTimeOut(1000).solve();
 		}
 		return sudoku;
+	}
+
+	/**
+	 * This method returns a partially filled sudoku
+	 * @param dimension
+	 * @return
+	 */
+	public static Sudoku getPartiallyFilledSudokuPuzzle(int dimension) {
+		Sudoku s = Sudoku.generateRandomCompletelyFilledSudoku(dimension);
+		List<Integer> randomIndices = NumberUtils.getShuffledList(0, dimension * dimension - 1);
+
+		for (final Integer currentRandomIndex : randomIndices) {
+			int row = currentRandomIndex / dimension;
+			int col = currentRandomIndex % dimension;
+			Integer toBeReplaced = s.getCellValue(row, col);
+
+			s.setCellValue(row, col, GridUtils.EMPTY_CELL);
+			if (!s.hasUniqueSolution()) {
+				s.setCellValue(row, col, toBeReplaced);
+			}
+		}
+
+		return s;
 	}
 }

@@ -83,4 +83,15 @@ public class SudokuTest {
 		Assert.assertTrue(s.isValid());
 		Assert.assertTrue(s.isSolved());
 	}
+	
+	@Test
+	public void getPartiallyFilledSudokuPuzzleTest() {
+		Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(9);
+		Assert.assertTrue(s.isValid());
+		Assert.assertTrue(s.hasUniqueSolution());
+		
+		new CustomSudokuSolver(s).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+		
+		Assert.assertTrue(s.isSolved());
+	}
 }
