@@ -84,8 +84,6 @@ public class SudokuTest {
 		long start = System.currentTimeMillis();
 		Sudoku s = Sudoku.generateRandomCompletelyFilledSudoku(9);
 		long end = System.currentTimeMillis();
-		System.err.println(end - start);
-		System.err.println(s);
 		Assert.assertTrue(s.isValid());
 		Assert.assertTrue(s.isSolved());
 	}

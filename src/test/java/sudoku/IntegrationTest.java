@@ -16,7 +16,6 @@ public class IntegrationTest {
 	public void test() throws IOException {
 		int obtained = 0;
 		for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile("easy_puzzles.txt")) {
-			System.out.println(currentGrid);
 			Sudoku s = new Sudoku(currentGrid);
 			Assert.assertTrue(s.hasUniqueSolution());
 			Assert.assertTrue(
