@@ -116,8 +116,6 @@ public class SudokuTest {
 			currentSudoku.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
 		}
 		for(final Sudoku currentSudoku : Sudoku.getSudokusFromFile(solutionFileName)) {
-			System.err.println(currentSudoku);
-			System.out.println("++++++++++++++++++++++++++++++++++++++");
 			Assert.assertTrue(currentSudoku.isSolved());
 		}
 	}
