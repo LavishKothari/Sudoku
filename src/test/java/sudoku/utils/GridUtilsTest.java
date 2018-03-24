@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sudoku.core.CustomSudokuSolver;
 import sudoku.core.Sudoku;
 import sudoku.utils.GridUtils;
 

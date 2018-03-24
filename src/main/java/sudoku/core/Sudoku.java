@@ -1,5 +1,7 @@
 package sudoku.core;
 
+import java.io.IOException;
+import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -293,5 +295,17 @@ public class Sudoku {
 		}
 
 		return s;
+	}
+	
+	public void writeSudokuToFile(String fileName, OpenOption ... openOptions) throws IOException {
+		GridUtils.writeGridToFile(fileName, getGrid(), openOptions);
+	}
+	
+	public static List<Sudoku> getSudokusFromFile(String fileName) throws IOException {
+		List<Sudoku> sudokuList = new ArrayList<>();
+		for(List<List<Integer>> currentGrid : GridUtils.getGridsFromFile(fileName)) {
+			sudokuList.add(new Sudoku(currentGrid));
+		}
+		return sudokuList;
 	}
 }

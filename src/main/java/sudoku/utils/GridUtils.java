@@ -3,7 +3,10 @@ package sudoku.utils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -164,6 +167,46 @@ public class GridUtils {
 		return sudokuGrid;
 	}
 
+	/**
+	 * This method is used to get the grid represented by the string. <br>
+	 * For example <br>
+	 * 0 0 0 0 7 0 0 2 0<br>
+	 * 8 0 0 0 0 0 0 0 6<br>
+	 * 0 1 0 2 0 5 0 0 0<br>
+	 * 9 0 5 4 0 0 0 0 8<br>
+	 * 0 0 0 0 0 0 0 0 0<br>
+	 * 3 0 0 0 0 8 5 0 1<br>
+	 * 0 0 0 3 0 2 0 8 0<br>
+	 * 4 0 0 0 0 0 0 0 9<br>
+	 * 0 7 0 0 6 0 0 0 0<br>
+	 * 
+	 * is <br>
+	 * 
+	 * ....7..2.8.......6.1.2.5...9.54....8.........3....85.1...3.2.8.4.......9.7..6....
+	 * <br>
+	 * 
+	 */
+	public static String getStringFromGrid(List<List<Integer>> grid) {
+		StringBuilder sb = new StringBuilder();
+		for (final List<Integer> currentList : grid) {
+			for (final Integer currentCellValue : currentList) {
+				if (currentCellValue == GridUtils.EMPTY_CELL)
+					sb.append('.');
+				else
+					sb.append(currentCellValue);
+			}
+		}
+		return sb.toString();
+	}
+
+	public static void writeGridToFile(String fileName, List<List<Integer>> grid, OpenOption... openOptions)
+			throws IOException {
+		URL url = GridUtils.class.getClassLoader().getResource(fileName);
+		Path path = Paths.get(url.getPath());
+		Files.write(path, getStringFromGrid(grid).getBytes(), openOptions);
+		Files.write(path, "\n".getBytes(), openOptions);
+	}
+
 	public static int getIthInteger(String str, int i) {
 		char c = str.charAt(i);
 		if (c == '.')
@@ -202,10 +245,10 @@ public class GridUtils {
 				}
 				sb.append("|\n");
 			}
-			
+
 			sb.append("| ");
 			for (int j = 0; j < n; j++) {
-				if(j!=0 && j%rootN==0)
+				if (j != 0 && j % rootN == 0)
 					sb.append("| ");
 				sb.append(grid.get(i).get(j));
 				sb.append(' ');

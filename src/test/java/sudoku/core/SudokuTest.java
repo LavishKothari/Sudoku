@@ -1,5 +1,11 @@
 package sudoku.core;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import sudoku.core.Sudoku;
+import sudoku.utils.GridUtils;
 
 public class SudokuTest {
 
@@ -63,35 +69,56 @@ public class SudokuTest {
 	public void hasUniqueSolutionTest() {
 		Assert.assertFalse(uniqueTestSudoku.hasUniqueSolution());
 	}
-	
+
 	@Test
 	public void getCellWithLeastPossibilityTest() {
 		// because the sudoku is completely filled
 		Assert.assertEquals(-1, sudoku.getCellWithLeastPossibility());
-		
-		// because the sudoku is not completely filled 
+
+		// because the sudoku is not completely filled
 		Assert.assertTrue(uniqueTestSudoku.getCellWithLeastPossibility() != -1);
 	}
-	
+
 	@Test
 	public void generateRandomCompletelyFilledSudokuTest() {
 		long start = System.currentTimeMillis();
 		Sudoku s = Sudoku.generateRandomCompletelyFilledSudoku(9);
 		long end = System.currentTimeMillis();
-		System.err.println(end-start);
+		System.err.println(end - start);
 		System.err.println(s);
 		Assert.assertTrue(s.isValid());
 		Assert.assertTrue(s.isSolved());
 	}
-	
+
 	@Test
 	public void getPartiallyFilledSudokuPuzzleTest() {
 		Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(9);
 		Assert.assertTrue(s.isValid());
 		Assert.assertTrue(s.hasUniqueSolution());
-		
+
 		new CustomSudokuSolver(s).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
-		
+
 		Assert.assertTrue(s.isSolved());
+	}
+
+	@Test
+	public void writeSudokuToFileTest() throws IOException {
+		String solutionFileName = "easy_puzzles_solution.txt";
+		URL url = SudokuTest.class.getClassLoader().getResource(solutionFileName);
+		Path path = Paths.get(url.getPath());
+		Files.write(path, "".getBytes());
+
+		for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile("easy_puzzles.txt")) {
+			Sudoku currentSudoku = new Sudoku(currentGrid);
+			Assert.assertTrue(currentSudoku.isValid());
+			new CustomSudokuSolver(currentSudoku).randomize(true).alwaysCalculatingCellWithLeastPossibility(true)
+					.solve();
+			currentSudoku.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
+		}
+		for(final Sudoku currentSudoku : Sudoku.getSudokusFromFile(solutionFileName)) {
+			System.err.println(currentSudoku);
+			System.out.println("++++++++++++++++++++++++++++++++++++++");
+			Assert.assertTrue(currentSudoku.isSolved());
+		}
 	}
 }
