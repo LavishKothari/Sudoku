@@ -127,6 +127,11 @@ public class CustomSudokuSolver {
 	 */
 	public boolean solve() {
 
+//		if(sudoku.getCachedSolvedGrid() != null) {
+//			sudoku.setGrid(GridUtils.getClonedGrid(sudoku.getCachedSolvedGrid()));
+//			return true;
+//		}
+		
 		logger.info("\n================================   Solver Report ================================ ");
 		logger.info(this);
 		long startTimer = System.currentTimeMillis();

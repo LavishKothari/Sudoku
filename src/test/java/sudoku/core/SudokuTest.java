@@ -117,6 +117,16 @@ public class SudokuTest {
 	}
 
 	@Test
+	public void isSolutionOfTest() {
+		for (int i = 0; i < 10; i++) {
+			Sudoku unsolved = Sudoku.generateRandomCompletelyFilledSudoku(9);
+			Sudoku solved = new Sudoku(unsolved.getGrid());
+			new CustomSudokuSolver(solved).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+			Assert.assertTrue(solved.isSolutionOf(unsolved));
+		}
+	}
+
+	@Test
 	public void appendSudokuTest() throws IOException {
 		String puzzleFileName = "sudoku_puzzles_generated.txt";
 		String solutionFileName = "sudoku_solution_generated.txt";

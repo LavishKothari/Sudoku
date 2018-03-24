@@ -20,11 +20,20 @@ public class Sudoku {
 
 	private final static Logger logger = Logger.getLogger(Sudoku.class);
 
-	private final List<List<Integer>> grid;
+	private List<List<Integer>> grid;
+
+	void setGrid(List<List<Integer>> grid) {
+		this.grid = grid;
+	}
+
 	/**
 	 * The functionality corresponding to the cachedSolvedGrid is to be implemented.
 	 */
-	// private final List<List<Integer>> cachedSolvedGrid;
+	// private List<List<Integer>> cachedSolvedGrid;
+	// List<List<Integer>> getCachedSolvedGrid() {
+	// return cachedSolvedGrid;
+	// }
+
 	private final int dimensionOfGrid;
 	private final int dimensionOfInnerGrid;
 
@@ -185,6 +194,9 @@ public class Sudoku {
 	public boolean hasUniqueSolution() {
 		Sudoku tempSudoku = getClonedSudoku();
 		int solutions = uniqueSolutionDecider(tempSudoku, tempSudoku.getCellWithLeastPossibility());
+		// if(solutions > 1) {
+		// this.cachedSolvedGrid = tempSudoku.cachedSolvedGrid;
+		// }
 		return solutions == 1;
 	}
 
@@ -203,7 +215,7 @@ public class Sudoku {
 	 */
 	private static int uniqueSolutionDecider(Sudoku tempSudoku, int currentCellNumber) {
 		if (currentCellNumber == -1 && tempSudoku.isSolved()) {
-			logger.info("One possible solution = \n" + tempSudoku);
+			// tempSudoku.cachedSolvedGrid = GridUtils.getClonedGrid(tempSudoku.grid);
 			return 1;
 		} else if (currentCellNumber == -1) {
 			/*
@@ -347,7 +359,7 @@ public class Sudoku {
 			for (int j = 0; j < dimensionOfGrid; j++) {
 				if (unsolvedSudoku.getCellValue(i, j) != GridUtils.EMPTY_CELL
 						&& this.getCellValue(i, j) != unsolvedSudoku.getCellValue(i, j)) {
-					return false;	
+					return false;
 				}
 			}
 		}
