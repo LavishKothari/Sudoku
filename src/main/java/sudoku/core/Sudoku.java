@@ -2,6 +2,7 @@ package sudoku.core;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -178,6 +179,7 @@ public class Sudoku {
 
 	/**
 	 * this function don't alters the original sudoku
+	 * 
 	 * @return <code>true</code> if this sudoku has a unique solution
 	 */
 	public boolean hasUniqueSolution() {
@@ -276,6 +278,7 @@ public class Sudoku {
 
 	/**
 	 * This method returns a partially filled sudoku
+	 * 
 	 * @param dimension
 	 * @return
 	 */
@@ -296,16 +299,96 @@ public class Sudoku {
 
 		return s;
 	}
-	
-	public void writeSudokuToFile(String fileName, OpenOption ... openOptions) throws IOException {
+
+	public void writeSudokuToFile(String fileName, OpenOption... openOptions) throws IOException {
 		GridUtils.writeGridToFile(fileName, getGrid(), openOptions);
 	}
-	
+
 	public static List<Sudoku> getSudokusFromFile(String fileName) throws IOException {
 		List<Sudoku> sudokuList = new ArrayList<>();
-		for(List<List<Integer>> currentGrid : GridUtils.getGridsFromFile(fileName)) {
+		for (List<List<Integer>> currentGrid : GridUtils.getGridsFromFile(fileName)) {
 			sudokuList.add(new Sudoku(currentGrid));
 		}
 		return sudokuList;
 	}
+
+	/**
+	 * 
+	 * @param puzzleFileName
+	 * @param solutionFileName
+	 * @param timeOut
+	 * @return The number of pairs of sudoku puzzles and their solutions
+	 *         successfully appended in respective file
+	 * @throws IOException
+	 */
+	public static int appendSudoku(int dimension, String puzzleFileName, String solutionFileName, long timeOut)
+			throws IOException {
+		long startTime = System.currentTimeMillis();
+		int counter = 0;
+		while (System.currentTimeMillis() - startTime < timeOut) {
+			Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(dimension);
+			s.writeSudokuToFile(puzzleFileName, StandardOpenOption.APPEND);
+			new CustomSudokuSolver(s).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+			s.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
+			counter++;
+		}
+		return counter;
+	}
+
+	/**
+	 * 
+	 * @param unsolvedSudoku
+	 * @return true if this is solved version of unsolvedSudoku, flase otherwise
+	 */
+	public boolean isSolutionOf(Sudoku unsolvedSudoku) {
+		if (this.dimensionOfGrid != unsolvedSudoku.dimensionOfGrid)
+			return false;
+		for (int i = 0; i < dimensionOfGrid; i++) {
+			for (int j = 0; j < dimensionOfGrid; j++) {
+				if (unsolvedSudoku.getCellValue(i, j) != GridUtils.EMPTY_CELL
+						&& this.getCellValue(i, j) != unsolvedSudoku.getCellValue(i, j)) {
+					return false;	
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + dimensionOfGrid;
+		result = prime * result + dimensionOfInnerGrid;
+		result = prime * result + ((grid == null) ? 0 : grid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sudoku other = (Sudoku) obj;
+		if (dimensionOfGrid != other.dimensionOfGrid)
+			return false;
+		if (dimensionOfInnerGrid != other.dimensionOfInnerGrid)
+			return false;
+		if (grid == null) {
+			if (other.grid != null)
+				return false;
+		} else {
+			for (int i = 0; i < dimensionOfGrid; i++) {
+				for (int j = 0; j < dimensionOfGrid; j++) {
+					if (this.getCellValue(i, j) != other.getCellValue(i, j))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
+
 }

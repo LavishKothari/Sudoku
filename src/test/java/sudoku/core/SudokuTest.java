@@ -81,9 +81,7 @@ public class SudokuTest {
 
 	@Test
 	public void generateRandomCompletelyFilledSudokuTest() {
-		long start = System.currentTimeMillis();
 		Sudoku s = Sudoku.generateRandomCompletelyFilledSudoku(9);
-		long end = System.currentTimeMillis();
 		Assert.assertTrue(s.isValid());
 		Assert.assertTrue(s.isSolved());
 	}
@@ -113,8 +111,24 @@ public class SudokuTest {
 					.solve();
 			currentSudoku.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
 		}
-		for(final Sudoku currentSudoku : Sudoku.getSudokusFromFile(solutionFileName)) {
+		for (final Sudoku currentSudoku : Sudoku.getSudokusFromFile(solutionFileName)) {
 			Assert.assertTrue(currentSudoku.isSolved());
+		}
+	}
+
+	@Test
+	public void appendSudokuTest() throws IOException {
+		String puzzleFileName = "sudoku_puzzles_generated.txt";
+		String solutionFileName = "sudoku_solution_generated.txt";
+
+		// generating puzzles and solutions for 20 secs
+		int appendedSudokus = Sudoku.appendSudoku(9, puzzleFileName, solutionFileName, 20000);
+		List<Sudoku> unsolvedSudokuList = Sudoku.getSudokusFromFile(puzzleFileName);
+		List<Sudoku> solvedSudokuList = Sudoku.getSudokusFromFile(solutionFileName);
+
+		for (int i = 0; i < unsolvedSudokuList.size(); i++) {
+			Assert.assertTrue(solvedSudokuList.get(i).isSolutionOf(unsolvedSudokuList.get(i)));
+			Assert.assertTrue(solvedSudokuList.get(i).isSolved());
 		}
 	}
 }
