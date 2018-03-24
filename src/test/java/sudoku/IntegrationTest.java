@@ -6,6 +6,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import sudoku.core.CustomSudokuSolver;
+import sudoku.core.Sudoku;
+import sudoku.utils.GridUtils;
+
 public class IntegrationTest {
 
 	@Test
