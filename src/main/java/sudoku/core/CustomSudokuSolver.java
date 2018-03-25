@@ -136,7 +136,7 @@ public class CustomSudokuSolver {
 		long startTimer = System.currentTimeMillis();
 
 		Sudoku tempSudoku = sudoku.getClonedSudoku();
-//		tempSudoku.solveUsingNaiveTechnique();
+		tempSudoku.solveUsingNaiveTechnique();
 		boolean solved = solveHelper(tempSudoku, 0, startTimer);
 
 		if (solved) {
@@ -178,7 +178,9 @@ public class CustomSudokuSolver {
 			Collections.shuffle(possibleValues);
 		}
 		for (final int currentValue : possibleValues) {
+			String previousGrid = GridUtils.getStringFromGrid(currentSudoku.getGrid());
 			currentSudoku.setCellValue(row, col, currentValue);
+			currentSudoku.solveUsingNaiveTechnique();
 			/*
 			 * The following if basically for updating the sequence list so that it now
 			 * reflects the optimal sequence at this moment.
@@ -198,7 +200,8 @@ public class CustomSudokuSolver {
 			if (solveHelper(currentSudoku, currentIndex + 1, startTimer))
 				return true;
 			// backtracking
-			currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
+//			currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
+			currentSudoku.setGrid(previousGrid);
 		}
 		return false;
 	}

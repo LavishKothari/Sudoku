@@ -224,7 +224,7 @@ public class GridUtils {
 		return result;
 	}
 
-	public static String toString(List<List<Integer>> grid) {
+	public static String toPrettyString(List<List<Integer>> grid) {
 		StringBuilder sb = new StringBuilder();
 		int n = grid.size();
 		int rootN = (int) NumberUtils.getSqureRoot(n);

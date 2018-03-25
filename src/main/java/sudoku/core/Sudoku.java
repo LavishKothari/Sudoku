@@ -32,6 +32,9 @@ public class Sudoku {
 		this.grid = GridUtils.getClonedGrid(someGrid);
 	}
 
+	void setGrid(String gridString) {
+		this.grid = GridUtils.getGridFromStringFormat(gridString);
+	}
 	/**
 	 * The functionality corresponding to the cachedSolvedGrid is to be implemented.
 	 */
@@ -288,7 +291,7 @@ public class Sudoku {
 
 	@Override
 	public String toString() {
-		return GridUtils.toString(grid);
+		return GridUtils.toPrettyString(grid);
 	}
 
 	/**

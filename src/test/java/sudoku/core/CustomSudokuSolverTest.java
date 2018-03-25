@@ -92,23 +92,8 @@ public class CustomSudokuSolverTest {
 
 	@Ignore
 	public void hardSudokuTest() {
-		boolean isSolved;
-		List<Integer> sequenceList = new ArrayList<>();
-		for (int i = 0; i < unsolvedSudoku.getDimensionOfGrid() * unsolvedSudoku.getDimensionOfGrid(); i++)
-			sequenceList.add(i);
-		Collections.shuffle(sequenceList);
-
-		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).solve();
-		Assert.assertEquals(unsolvedHardSudoku.isSolved(), isSolved);
-
-		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).solve();
-		Assert.assertEquals(unsolvedHardSudoku.isSolved(), isSolved);
-
-		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).sequenceList(sequenceList).solve();
-		Assert.assertEquals(unsolvedHardSudoku.isSolved(), isSolved);
-
-		isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true).selectInitialOptimalCellOrderingList()
-				.solve();
+		boolean isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true)
+				.selectInitialOptimalCellOrderingList().solve();
 		Assert.assertEquals(unsolvedHardSudoku.isSolved(), isSolved);
 	}
 
