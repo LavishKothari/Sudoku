@@ -131,7 +131,7 @@ public class CustomSudokuSolver {
 			return true;
 		}
 
-		logger.info("\n================================   Solver Report ================================ ");
+		logger.info("\n================================ Solver Report ================================ ");
 		logger.info(this);
 		long startTimer = System.currentTimeMillis();
 

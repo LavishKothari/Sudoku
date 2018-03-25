@@ -141,4 +141,14 @@ public class SudokuTest {
 			Assert.assertTrue(solvedSudokuList.get(i).isSolved());
 		}
 	}
+
+	@Test
+	public void solveUsingNaiveTechniqueTest() throws IOException {
+		for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile("easy_puzzles.txt")) {
+			Sudoku currentSudoku = new Sudoku(currentGrid);
+			Assert.assertTrue(currentSudoku.isValid());
+			currentSudoku.solveUsingNaiveTechnique();
+			Assert.assertTrue(currentSudoku.isValid());
+		}
+	}
 }

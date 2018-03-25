@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
+import sudoku.utils.CoOrdinate;
 import sudoku.utils.GridUtils;
 import sudoku.utils.NumberUtils;
 
@@ -436,4 +437,120 @@ public class Sudoku {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param row
+	 * @param digit
+	 * @return a list of list such that possibleIndices.get(0) will represents list
+	 *         of indices where 1 can be safely filled, <br/>
+	 *         possibleIndices.get(1) will represents list of indices where 2 can be
+	 *         safely filled, <br/>
+	 *         possibleIndices.get(2) will represents list of indices where 3 can be
+	 *         safely filled, <br/>
+	 *         possibleIndices.get(3) will represents list of indices where 4 can be
+	 *         safely filled, <br/>
+	 *         ... <br/>
+	 *         possibleIndices.get(8) will represents list of indices where 9 can be
+	 *         safely filled, <br/>
+	 *         for a 9*9 sudoku in row number <code>row</code>
+	 */
+	private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInRow(int row) {
+		List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
+		for (int i = 0; i < this.getDimensionOfGrid(); i++)
+			possibleIndices.add(new ArrayList<CoOrdinate>());
+
+		for (int j = 0; j < this.getDimensionOfGrid(); j++) {
+			for (final Integer currentValue : getPossibleValues(row, j)) {
+				possibleIndices.get(currentValue - 1).add(new CoOrdinate(row, j));
+			}
+		}
+		return possibleIndices;
+	}
+
+	private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInColumn(int col) {
+		List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
+		for (int i = 0; i < this.getDimensionOfGrid(); i++)
+			possibleIndices.add(new ArrayList<CoOrdinate>());
+
+		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
+			for (final Integer currentValue : getPossibleValues(i, col)) {
+				possibleIndices.get(currentValue - 1).add(new CoOrdinate(i, col));
+			}
+		}
+		return possibleIndices;
+	}
+
+	private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInInnerBlock(int innerGridNumber) {
+		List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
+		for (int i = 0; i < this.getDimensionOfGrid(); i++)
+			possibleIndices.add(new ArrayList<CoOrdinate>());
+
+		int Y = innerGridNumber % dimensionOfInnerGrid;
+		int X = innerGridNumber / dimensionOfInnerGrid;
+		int startXIndex = X * dimensionOfInnerGrid;
+		int startYIndex = Y * dimensionOfInnerGrid;
+
+		for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
+			for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
+				for (final Integer currentValue : getPossibleValues(i, j)) {
+					possibleIndices.get(currentValue - 1).add(new CoOrdinate(i, j));
+				}
+			}
+		}
+		return possibleIndices;
+	}
+
+	/**
+	 * This method checks and fills the only possible position where a digit can be
+	 * filled in a row, column or in a grid.<br/>
+	 * Suppose there is only one place in a specific row where we can fill 7 and no
+	 * other place in that row where 7 can be filled, then this method identifies
+	 * this for that each row, column and Inner grid and fill it in a deterministic
+	 * way.
+	 * 
+	 */
+	private void fillUsingNaiveTechnique() {
+
+		// for rows
+		for (int row = 0; row < this.getDimensionOfGrid(); row++) {
+			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInRow(row);
+			fillAccordingToListOfIndices(possibleIndices);
+		}
+
+		// for columns
+		for (int col = 0; col < this.getDimensionOfGrid(); col++) {
+			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(col);
+			fillAccordingToListOfIndices(possibleIndices);
+		}
+
+		// for inner grids
+		for (int innerGridNumber = 0; innerGridNumber < this.getDimensionOfGrid(); innerGridNumber++) {
+			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(innerGridNumber);
+			fillAccordingToListOfIndices(possibleIndices);
+		}
+
+	}
+
+	/**
+	 * 
+	 * @return true if at least one cell is populated by this method, otherwise
+	 *         false
+	 */
+	public void solveUsingNaiveTechnique() {
+		String startStringRep, endStringRep;
+		do {
+			startStringRep = GridUtils.getStringFromGrid(this.grid);
+			fillUsingNaiveTechnique();
+			endStringRep = GridUtils.getStringFromGrid(this.grid);
+		} while (!startStringRep.equals(endStringRep));
+	}
+
+	private void fillAccordingToListOfIndices(List<List<CoOrdinate>> possibleIndices) {
+		for (int number = 0; number < this.getDimensionOfGrid(); number++) {
+			if (possibleIndices.get(number).size() == 1) {
+				CoOrdinate currentCoOrdinate = possibleIndices.get(number).get(0);
+				this.setCellValue(currentCoOrdinate.getX(), currentCoOrdinate.getY(), number + 1);
+			}
+		}
+	}
 }
