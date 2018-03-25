@@ -10,9 +10,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import sudoku.core.CustomSudokuSolver;
 import sudoku.core.Sudoku;
-import sudoku.utils.GridUtils;
 
 public class GridUtilsTest {
 
@@ -138,6 +136,18 @@ public class GridUtilsTest {
 			for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile(currentFileName)) {
 				Sudoku currentSudoku = new Sudoku(currentGrid);
 				Assert.assertTrue(currentSudoku.isValid());
+			}
+		}
+	}
+
+	@Test
+	public void getClonedListTest() {
+		List<List<Integer>> clonedGrid = GridUtils.getClonedGrid(sudokuGrid);
+		Assert.assertTrue(sudokuGrid != clonedGrid);
+		for (int i = 0; i < clonedGrid.size(); i++) {
+			Assert.assertTrue(sudokuGrid.get(i) != clonedGrid.get(i));
+			for (int j = 0; j < clonedGrid.get(i).size(); j++) {
+				Assert.assertEquals(sudokuGrid.get(i).get(j), clonedGrid.get(i).get(j));
 			}
 		}
 	}

@@ -22,17 +22,37 @@ public class Sudoku {
 
 	private List<List<Integer>> grid;
 
-	void setGrid(List<List<Integer>> grid) {
-		this.grid = grid;
+	/**
+	 * This is a special setter which clones someGrid and then sets this.grid
+	 * 
+	 * @param someGrid
+	 */
+	void setGrid(List<List<Integer>> someGrid) {
+		this.grid = GridUtils.getClonedGrid(someGrid);
 	}
 
 	/**
 	 * The functionality corresponding to the cachedSolvedGrid is to be implemented.
 	 */
-	// private List<List<Integer>> cachedSolvedGrid;
-	// List<List<Integer>> getCachedSolvedGrid() {
-	// return cachedSolvedGrid;
-	// }
+	private List<List<Integer>> cachedSolvedGrid;
+
+	/**
+	 * This is a special setter. This is the ONLY recommended way to set the cached
+	 * grid if the cached grid is already set, this method does nothing, otherwise
+	 * it creates a new deep copy of someGrid and then assigns it to cached grid.
+	 * The cached grid should never updated in any other way.
+	 * 
+	 * @param someGrid
+	 */
+	void setCachedSolvedGrid(List<List<Integer>> someGrid) {
+		if (cachedSolvedGrid == null && new Sudoku(someGrid).isSolutionOf(this)) {
+			cachedSolvedGrid = GridUtils.getClonedGrid(someGrid);
+		}
+	}
+
+	List<List<Integer>> getCachedSolvedGrid() {
+		return cachedSolvedGrid;
+	}
 
 	private final int dimensionOfGrid;
 	private final int dimensionOfInnerGrid;
@@ -194,9 +214,9 @@ public class Sudoku {
 	public boolean hasUniqueSolution() {
 		Sudoku tempSudoku = getClonedSudoku();
 		int solutions = uniqueSolutionDecider(tempSudoku, tempSudoku.getCellWithLeastPossibility());
-		// if(solutions > 1) {
-		// this.cachedSolvedGrid = tempSudoku.cachedSolvedGrid;
-		// }
+		if (solutions >= 1) {
+			this.setCachedSolvedGrid(tempSudoku.cachedSolvedGrid);
+		}
 		return solutions == 1;
 	}
 
@@ -215,7 +235,15 @@ public class Sudoku {
 	 */
 	private static int uniqueSolutionDecider(Sudoku tempSudoku, int currentCellNumber) {
 		if (currentCellNumber == -1 && tempSudoku.isSolved()) {
-			// tempSudoku.cachedSolvedGrid = GridUtils.getClonedGrid(tempSudoku.grid);
+			// if (!tempSudoku.isSolutionOf(unsolved)) {
+			// throw new RuntimeException("yes what you were thinking was correct");
+			// } else {
+			// if (unsolved.cachedSolvedGrid == null) {
+			// // unsolved.cachedSolvedGrid = GridUtils.getClonedGrid(tempSudoku.grid);
+			// unsolved.setCachedSolvedGrid(tempSudoku.grid);
+			// }
+			// }
+			tempSudoku.setCachedSolvedGrid(tempSudoku.getGrid());
 			return 1;
 		} else if (currentCellNumber == -1) {
 			/*
@@ -296,6 +324,8 @@ public class Sudoku {
 	 */
 	public static Sudoku getPartiallyFilledSudokuPuzzle(int dimension) {
 		Sudoku s = Sudoku.generateRandomCompletelyFilledSudoku(dimension);
+		// updating the cached grid
+		s.setCachedSolvedGrid(s.getGrid());
 		List<Integer> randomIndices = NumberUtils.getShuffledList(0, dimension * dimension - 1);
 
 		for (final Integer currentRandomIndex : randomIndices) {
@@ -333,8 +363,8 @@ public class Sudoku {
 	 *         successfully appended in respective file
 	 * @throws IOException
 	 */
-	public static int appendSudoku(int dimension, String puzzleFileName, String solutionFileName, long timeOut)
-			throws IOException {
+	public static int appendRandomGeneratedSudoku(int dimension, String puzzleFileName, String solutionFileName,
+			long timeOut) throws IOException {
 		long startTime = System.currentTimeMillis();
 		int counter = 0;
 		while (System.currentTimeMillis() - startTime < timeOut) {
@@ -348,12 +378,15 @@ public class Sudoku {
 	}
 
 	/**
+	 * This method assumes that this sudoku should be solved.
 	 * 
 	 * @param unsolvedSudoku
 	 * @return true if this is solved version of unsolvedSudoku, flase otherwise
 	 */
 	public boolean isSolutionOf(Sudoku unsolvedSudoku) {
 		if (this.dimensionOfGrid != unsolvedSudoku.dimensionOfGrid)
+			return false;
+		if (!this.isSolved())
 			return false;
 		for (int i = 0; i < dimensionOfGrid; i++) {
 			for (int j = 0; j < dimensionOfGrid; j++) {

@@ -10,7 +10,8 @@ import sudoku.utils.GridUtilsTest;
 import sudoku.utils.NumberUtilsTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ GridUtilsTest.class, NumberUtilsTest.class, SudokuTest.class, CustomSudokuSolverTest.class, IntegrationTest.class})
+@SuiteClasses({ GridUtilsTest.class, NumberUtilsTest.class, SudokuTest.class, CustomSudokuSolverTest.class,
+		IntegrationTest.class })
 public final class MasterTester {
 
 }

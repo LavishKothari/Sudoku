@@ -11,9 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import sudoku.core.CustomSudokuSolver;
-import sudoku.core.Sudoku;
-
 public class CustomSudokuSolverTest {
 
 	private static Sudoku unsolvedSudoku;

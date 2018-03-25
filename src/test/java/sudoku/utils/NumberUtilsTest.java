@@ -3,9 +3,6 @@ package sudoku.utils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import sudoku.utils.NumberUtils;
-
-
 public class NumberUtilsTest {
 
 	@Test
@@ -15,7 +12,7 @@ public class NumberUtilsTest {
 		Assert.assertTrue(NumberUtils.isPerfectSquare(4));
 		Assert.assertTrue(NumberUtils.isPerfectSquare(100));
 		Assert.assertTrue(NumberUtils.isPerfectSquare(1000000));
-		
+
 		Assert.assertFalse(NumberUtils.isPerfectSquare(3));
 		Assert.assertFalse(NumberUtils.isPerfectSquare(2));
 		Assert.assertFalse(NumberUtils.isPerfectSquare(5));
@@ -23,7 +20,7 @@ public class NumberUtilsTest {
 		Assert.assertFalse(NumberUtils.isPerfectSquare(99));
 		Assert.assertFalse(NumberUtils.isPerfectSquare(999999));
 	}
-	
+
 	@Test
 	public void getSquareRootTest() {
 		Assert.assertEquals(5, NumberUtils.getSqureRoot(25));

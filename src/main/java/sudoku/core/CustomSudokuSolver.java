@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Stopwatch;
-
 import sudoku.utils.GridUtils;
 
 public class CustomSudokuSolver {
@@ -127,11 +125,12 @@ public class CustomSudokuSolver {
 	 */
 	public boolean solve() {
 
-//		if(sudoku.getCachedSolvedGrid() != null) {
-//			sudoku.setGrid(GridUtils.getClonedGrid(sudoku.getCachedSolvedGrid()));
-//			return true;
-//		}
-		
+		if (sudoku.getCachedSolvedGrid() != null) {
+			logger.info("Cached grid found, returning cached solution");
+			sudoku.setGrid(sudoku.getCachedSolvedGrid());
+			return true;
+		}
+
 		logger.info("\n================================   Solver Report ================================ ");
 		logger.info(this);
 		long startTimer = System.currentTimeMillis();
@@ -158,7 +157,7 @@ public class CustomSudokuSolver {
 	}
 
 	private boolean solveHelper(Sudoku currentSudoku, int currentIndex, long startTimer) {
-		if (backtrackingTimeOut != 0 &&  System.currentTimeMillis() - startTimer > backtrackingTimeOut) {
+		if (backtrackingTimeOut != 0 && System.currentTimeMillis() - startTimer > backtrackingTimeOut) {
 			return false;
 		}
 		if (currentIndex == currentSudoku.getDimensionOfGrid() * currentSudoku.getDimensionOfGrid()) {
