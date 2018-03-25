@@ -511,24 +511,21 @@ public class Sudoku {
 	 */
 	private void fillUsingNaiveTechnique() {
 
-		// for rows
-		for (int row = 0; row < this.getDimensionOfGrid(); row++) {
-			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInRow(row);
+		List<List<CoOrdinate>> possibleIndices;
+
+		for (int counter = 0; counter < this.getDimensionOfGrid(); counter++) {
+			// for rows
+			possibleIndices = getIndicesWhereDigitsCanBePlacedInRow(counter);
+			fillAccordingToListOfIndices(possibleIndices);
+			
+			// for columns
+			possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(counter);
+			fillAccordingToListOfIndices(possibleIndices);
+			
+			// for inner grids
+			possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(counter);
 			fillAccordingToListOfIndices(possibleIndices);
 		}
-
-		// for columns
-		for (int col = 0; col < this.getDimensionOfGrid(); col++) {
-			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(col);
-			fillAccordingToListOfIndices(possibleIndices);
-		}
-
-		// for inner grids
-		for (int innerGridNumber = 0; innerGridNumber < this.getDimensionOfGrid(); innerGridNumber++) {
-			List<List<CoOrdinate>> possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(innerGridNumber);
-			fillAccordingToListOfIndices(possibleIndices);
-		}
-
 	}
 
 	/**

@@ -136,6 +136,7 @@ public class CustomSudokuSolver {
 		long startTimer = System.currentTimeMillis();
 
 		Sudoku tempSudoku = sudoku.getClonedSudoku();
+//		tempSudoku.solveUsingNaiveTechnique();
 		boolean solved = solveHelper(tempSudoku, 0, startTimer);
 
 		if (solved) {
