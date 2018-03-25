@@ -35,6 +35,7 @@ public class Sudoku {
 	void setGrid(String gridString) {
 		this.grid = GridUtils.getGridFromStringFormat(gridString);
 	}
+
 	/**
 	 * The functionality corresponding to the cachedSolvedGrid is to be implemented.
 	 */
@@ -520,11 +521,11 @@ public class Sudoku {
 			// for rows
 			possibleIndices = getIndicesWhereDigitsCanBePlacedInRow(counter);
 			fillAccordingToListOfIndices(possibleIndices);
-			
+
 			// for columns
 			possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(counter);
 			fillAccordingToListOfIndices(possibleIndices);
-			
+
 			// for inner grids
 			possibleIndices = getIndicesWhereDigitsCanBePlacedInColumn(counter);
 			fillAccordingToListOfIndices(possibleIndices);

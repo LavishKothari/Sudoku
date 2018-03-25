@@ -200,7 +200,7 @@ public class CustomSudokuSolver {
 			if (solveHelper(currentSudoku, currentIndex + 1, startTimer))
 				return true;
 			// backtracking
-//			currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
+			// currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
 			currentSudoku.setGrid(previousGrid);
 		}
 		return false;

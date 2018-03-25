@@ -3,8 +3,8 @@ package sudoku.utils;
 public class CoOrdinate {
 	private final int x, y;
 
-	public static final CoOrdinate DUMMY = new CoOrdinate(-1,-1);
-	
+	public static final CoOrdinate DUMMY = new CoOrdinate(-1, -1);
+
 	public CoOrdinate(int x, int y) {
 		super();
 		this.x = x;
