@@ -8,7 +8,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CustomSudokuSolverTest {
@@ -90,7 +89,7 @@ public class CustomSudokuSolverTest {
 		Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
 	}
 
-	@Ignore
+	@Test
 	public void hardSudokuTest() {
 		boolean isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true)
 				.selectInitialOptimalCellOrderingList().solve();

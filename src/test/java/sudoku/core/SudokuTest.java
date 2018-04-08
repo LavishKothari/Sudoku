@@ -137,6 +137,7 @@ public class SudokuTest {
 		List<Sudoku> solvedSudokuList = Sudoku.getSudokusFromFile(solutionFileName);
 
 		for (int i = 0; i < unsolvedSudokuList.size(); i++) {
+			Assert.assertTrue(solvedSudokuList.get(i).hasUniqueSolution());
 			Assert.assertTrue(solvedSudokuList.get(i).isSolutionOf(unsolvedSudokuList.get(i)));
 			Assert.assertTrue(solvedSudokuList.get(i).isSolved());
 		}

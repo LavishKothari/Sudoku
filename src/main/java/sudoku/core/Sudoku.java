@@ -240,14 +240,6 @@ public class Sudoku {
 	 */
 	private static int uniqueSolutionDecider(Sudoku tempSudoku, int currentCellNumber) {
 		if (currentCellNumber == -1 && tempSudoku.isSolved()) {
-			// if (!tempSudoku.isSolutionOf(unsolved)) {
-			// throw new RuntimeException("yes what you were thinking was correct");
-			// } else {
-			// if (unsolved.cachedSolvedGrid == null) {
-			// // unsolved.cachedSolvedGrid = GridUtils.getClonedGrid(tempSudoku.grid);
-			// unsolved.setCachedSolvedGrid(tempSudoku.grid);
-			// }
-			// }
 			tempSudoku.setCachedSolvedGrid(tempSudoku.getGrid());
 			return 1;
 		} else if (currentCellNumber == -1) {
@@ -264,20 +256,22 @@ public class Sudoku {
 		Collections.shuffle(possibleValues);
 		int solutions = 0;
 		for (final Integer currentValue : possibleValues) {
+			String previous = GridUtils.getStringFromGrid(tempSudoku.getGrid());
 			tempSudoku.setCellValue(row, col, currentValue);
+
+			tempSudoku.solveUsingNaiveTechnique();
 
 			int nextCellNumber = tempSudoku.getCellWithLeastPossibility();
 			solutions += uniqueSolutionDecider(tempSudoku, nextCellNumber);
 			if (solutions > 1) {
 				return 2;
 			}
-
-			tempSudoku.clearCell(row, col);
-
+			// tempSudoku.clearCell(row, col);
+			tempSudoku.setGrid(GridUtils.getGridFromStringFormat(previous));
 		}
 		// here the value of soutions will either be 0 or 1
 		// clearing the cell is an important thing to do before backtracking
-		tempSudoku.clearCell(row, col);
+		// tempSudoku.clearCell(row, col);
 		return solutions;
 
 	}
@@ -533,9 +527,7 @@ public class Sudoku {
 	}
 
 	/**
-	 * 
-	 * @return true if at least one cell is populated by this method, otherwise
-	 *         false
+	 * This method deterministically fills in all the possible cells
 	 */
 	public void solveUsingNaiveTechnique() {
 		String startStringRep, endStringRep;
