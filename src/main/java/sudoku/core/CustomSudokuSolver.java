@@ -136,7 +136,7 @@ public class CustomSudokuSolver {
 		long startTimer = System.currentTimeMillis();
 
 		Sudoku tempSudoku = sudoku.getClonedSudoku();
-		tempSudoku.solveUsingNaiveTechnique();
+		tempSudoku.solveUsingDeterministicTechniques();
 		boolean solved = solveHelper(tempSudoku, 0, startTimer);
 
 		if (solved) {
@@ -180,7 +180,7 @@ public class CustomSudokuSolver {
 		for (final int currentValue : possibleValues) {
 			String previousGrid = GridUtils.getStringFromGrid(currentSudoku.getGrid());
 			currentSudoku.setCellValue(row, col, currentValue);
-			currentSudoku.solveUsingNaiveTechnique();
+			currentSudoku.solveUsingDeterministicTechniques();
 			/*
 			 * The following if basically for updating the sequence list so that it now
 			 * reflects the optimal sequence at this moment.

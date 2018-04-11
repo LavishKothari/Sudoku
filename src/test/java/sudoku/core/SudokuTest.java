@@ -148,7 +148,7 @@ public class SudokuTest {
 		for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile("easy_puzzles.txt")) {
 			Sudoku currentSudoku = new Sudoku(currentGrid);
 			Assert.assertTrue(currentSudoku.isValid());
-			currentSudoku.solveUsingNaiveTechnique();
+			currentSudoku.solveUsingDeterministicTechniques();
 			Assert.assertTrue(currentSudoku.isValid());
 		}
 	}

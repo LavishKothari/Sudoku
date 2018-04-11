@@ -259,7 +259,7 @@ public class Sudoku {
 			String previous = GridUtils.getStringFromGrid(tempSudoku.getGrid());
 			tempSudoku.setCellValue(row, col, currentValue);
 
-			tempSudoku.solveUsingNaiveTechnique();
+			tempSudoku.solveUsingDeterministicTechniques();
 
 			int nextCellNumber = tempSudoku.getCellWithLeastPossibility();
 			solutions += uniqueSolutionDecider(tempSudoku, nextCellNumber);
@@ -440,7 +440,7 @@ public class Sudoku {
 	 * @param row
 	 * @param digit
 	 * @return a list of list such that possibleIndices.get(0) will represents list
-	 *         of indices where 1 can be safely filled, <br/>
+	 *         of co-ordinates where 1 can be safely filled, <br/>
 	 *         possibleIndices.get(1) will represents list of indices where 2 can be
 	 *         safely filled, <br/>
 	 *         possibleIndices.get(2) will represents list of indices where 3 can be
@@ -507,7 +507,7 @@ public class Sudoku {
 	 * way.
 	 * 
 	 */
-	private void fillUsingNaiveTechnique() {
+	private void fillBySeeingPossibilitiesWhereDigitCanBeFilled() {
 
 		List<List<CoOrdinate>> possibleIndices;
 
@@ -529,13 +529,27 @@ public class Sudoku {
 	/**
 	 * This method deterministically fills in all the possible cells
 	 */
-	public void solveUsingNaiveTechnique() {
+	public void solveUsingDeterministicTechniques() {
 		String startStringRep, endStringRep;
 		do {
 			startStringRep = GridUtils.getStringFromGrid(this.grid);
-			fillUsingNaiveTechnique();
+			
+			fillBySeeingPossibilitiesWhereDigitCanBeFilled();
+			fillBySeeingPossibilitiesOfDigitsInCell();
+
 			endStringRep = GridUtils.getStringFromGrid(this.grid);
 		} while (!startStringRep.equals(endStringRep));
+	}
+
+	private void fillBySeeingPossibilitiesOfDigitsInCell() {
+		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
+			for (int j = 0; j < this.getDimensionOfGrid(); j++) {
+				List<Integer> possibilities = this.getPossibleValues(i, j);
+				if (possibilities.size() == 1) {
+					this.setCellValue(i, j, possibilities.get(0));
+				}
+			}
+		}
 	}
 
 	private void fillAccordingToListOfIndices(List<List<CoOrdinate>> possibleIndices) {
