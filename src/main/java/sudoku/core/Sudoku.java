@@ -84,6 +84,13 @@ public class Sudoku {
 		dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 	}
 
+	public Sudoku(String s) {
+		super();
+		this.grid = GridUtils.getGridFromStringFormat(s);
+		dimensionOfGrid = this.grid.size();
+		dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
+	}
+	
 	public int getCellValue(int row, int col) {
 		return grid.get(row).get(col);
 	}
@@ -533,7 +540,7 @@ public class Sudoku {
 		String startStringRep, endStringRep;
 		do {
 			startStringRep = GridUtils.getStringFromGrid(this.grid);
-			
+
 			fillBySeeingPossibilitiesWhereDigitCanBeFilled();
 			fillBySeeingPossibilitiesOfDigitsInCell();
 
@@ -542,14 +549,105 @@ public class Sudoku {
 	}
 
 	private void fillBySeeingPossibilitiesOfDigitsInCell() {
+
+		List<List<List<Integer>>> possibilities = getPossibilitiesForEachCell();
+		/*
+		 * It might be the case that pruning naked doubles may prove computationally
+		 * expensive. This pruning is not always good because the benefit that it
+		 * provides might be expensive (not worth it) when compared to the good it did.
+		 */
+		//prunePossibilitiesUsingNakedDoubles(possibilities);
 		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
 			for (int j = 0; j < this.getDimensionOfGrid(); j++) {
-				List<Integer> possibilities = this.getPossibleValues(i, j);
+				List<Integer> possibilityList = possibilities.get(i).get(j);
+
+				/*
+				 * Filling Naked singles
+				 */
 				if (possibilities.size() == 1) {
-					this.setCellValue(i, j, possibilities.get(0));
+					this.setCellValue(i, j, possibilityList.get(0));
 				}
 			}
 		}
+
+	}
+
+	private List<List<List<Integer>>> getPossibilitiesForEachCell() {
+		List<List<List<Integer>>> possibilities = new ArrayList<>(this.getDimensionOfGrid());
+		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
+			possibilities.add(new ArrayList<>(this.getDimensionOfGrid()));
+			for (int j = 0; j < this.getDimensionOfGrid(); j++) {
+				possibilities.get(i).add(null);
+			}
+		}
+
+		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
+			for (int j = 0; j < this.getDimensionOfGrid(); j++) {
+				List<Integer> possibilityList = this.getPossibleValues(i, j);
+				// TODO: check if sorting is necessary
+				Collections.sort(possibilityList);
+
+				possibilities.get(i).set(j, possibilityList);
+
+			}
+		}
+		return possibilities;
+	}
+
+	private void prunePossibilitiesUsingNakedDoubles(List<List<List<Integer>>> possibilities) {
+		// for rows
+		for (int row = 0; row < this.getDimensionOfGrid(); row++) {
+			List<CoOrdinate> rowCoOrdinates = CoOrdinate.getCoOrdinateListOfRow(row, this.getDimensionOfGrid());
+			pruneByCoOrdinates(rowCoOrdinates, possibilities);
+		}
+
+		// for cols
+		for (int col = 0; col < this.getDimensionOfGrid(); col++) {
+			List<CoOrdinate> colCoOrdinates = CoOrdinate.getCoOrdinateListOfColumn(col, this.getDimensionOfGrid());
+			pruneByCoOrdinates(colCoOrdinates, possibilities);
+		}
+
+		// for innerGrid
+		for (int gridNumber = 0; gridNumber < this.getDimensionOfGrid(); gridNumber++) {
+			List<CoOrdinate> gridCoOrdinates = CoOrdinate.getCoOrdinateListOfInnerGrid(gridNumber,
+					this.getDimensionOfGrid());
+			pruneByCoOrdinates(gridCoOrdinates, possibilities);
+		}
+	}
+
+	/*
+	 * Basically this method is pruning naked doubles
+	 */
+	private void pruneByCoOrdinates(List<CoOrdinate> currentCoOrdinateList, List<List<List<Integer>>> possibilities) {
+
+		for (int i = 0; i < currentCoOrdinateList.size(); i++) {
+			for (int j = 0; j < currentCoOrdinateList.size(); j++) {
+				CoOrdinate first = currentCoOrdinateList.get(i);
+				CoOrdinate second = currentCoOrdinateList.get(j);
+
+				List<Integer> firstList = possibilities.get(first.getX()).get(first.getY());
+				List<Integer> secondList = possibilities.get(second.getX()).get(second.getY());
+				if (firstList.size() == 2 && secondList.size() == 2 && firstList.equals(secondList)) {
+					// there is a possibility for pruning in row.
+
+					Integer dual1 = firstList.get(0);
+					Integer dual2 = firstList.get(1);
+
+					for (final CoOrdinate currentCoOrdinate : currentCoOrdinateList) {
+						List<Integer> currentPossibilityList = possibilities.get(currentCoOrdinate.getX())
+								.get(currentCoOrdinate.getY());
+						if (currentPossibilityList.contains(dual1)) {
+							currentPossibilityList.remove(dual1);
+						}
+						if (currentPossibilityList.contains(dual2)) {
+							currentPossibilityList.remove(dual2);
+						}
+
+					}
+				}
+			}
+		}
+
 	}
 
 	private void fillAccordingToListOfIndices(List<List<CoOrdinate>> possibleIndices) {
