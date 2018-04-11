@@ -90,7 +90,7 @@ public class Sudoku {
 		dimensionOfGrid = this.grid.size();
 		dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 	}
-	
+
 	public int getCellValue(int row, int col) {
 		return grid.get(row).get(col);
 	}
@@ -556,7 +556,7 @@ public class Sudoku {
 		 * expensive. This pruning is not always good because the benefit that it
 		 * provides might be expensive (not worth it) when compared to the good it did.
 		 */
-		//prunePossibilitiesUsingNakedDoubles(possibilities);
+		prunePossibilitiesUsingNakedDoubles(possibilities);
 		for (int i = 0; i < this.getDimensionOfGrid(); i++) {
 			for (int j = 0; j < this.getDimensionOfGrid(); j++) {
 				List<Integer> possibilityList = possibilities.get(i).get(j);
@@ -618,12 +618,15 @@ public class Sudoku {
 	/*
 	 * Basically this method is pruning naked doubles
 	 */
-	private void pruneByCoOrdinates(List<CoOrdinate> currentCoOrdinateList, List<List<List<Integer>>> possibilities) {
+	private void pruneByCoOrdinates(List<CoOrdinate> coOrdinateList, List<List<List<Integer>>> possibilities) {
 
-		for (int i = 0; i < currentCoOrdinateList.size(); i++) {
-			for (int j = 0; j < currentCoOrdinateList.size(); j++) {
-				CoOrdinate first = currentCoOrdinateList.get(i);
-				CoOrdinate second = currentCoOrdinateList.get(j);
+		List<CoOrdinate> listOfCoOrdinatesWith2Possibilities = coOrdinateList.stream()
+				.filter(e -> possibilities.get(e.getX()).get(e.getY()).size() == 2).collect(Collectors.toList());
+
+		for (int i = 0; i < listOfCoOrdinatesWith2Possibilities.size(); i++) {
+			for (int j = i + 1; j < listOfCoOrdinatesWith2Possibilities.size(); j++) {
+				CoOrdinate first = listOfCoOrdinatesWith2Possibilities.get(i);
+				CoOrdinate second = listOfCoOrdinatesWith2Possibilities.get(j);
 
 				List<Integer> firstList = possibilities.get(first.getX()).get(first.getY());
 				List<Integer> secondList = possibilities.get(second.getX()).get(second.getY());
@@ -633,7 +636,9 @@ public class Sudoku {
 					Integer dual1 = firstList.get(0);
 					Integer dual2 = firstList.get(1);
 
-					for (final CoOrdinate currentCoOrdinate : currentCoOrdinateList) {
+					for (final CoOrdinate currentCoOrdinate : coOrdinateList) {
+						if (currentCoOrdinate.equals(first) || currentCoOrdinate.equals(second))
+							continue;
 						List<Integer> currentPossibilityList = possibilities.get(currentCoOrdinate.getX())
 								.get(currentCoOrdinate.getY());
 						if (currentPossibilityList.contains(dual1)) {

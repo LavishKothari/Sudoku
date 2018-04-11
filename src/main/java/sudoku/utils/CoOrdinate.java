@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoOrdinate implements Comparable<CoOrdinate> {
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
+	}
+
 	private final int x, y;
 
 	public static final CoOrdinate DUMMY = new CoOrdinate(-1, -1);
