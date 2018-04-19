@@ -663,4 +663,17 @@ public class Sudoku {
 			}
 		}
 	}
+
+	public List<Integer> getRowValues(int rowNumber) {
+		return GridUtils.getListOfRow(grid, rowNumber);
+	}
+
+	public List<Integer> getInnerGridValues(int innerGridNumber) {
+		return GridUtils.getListOfColumn(grid, innerGridNumber);
+	}
+
+	public List<Integer> getColumnValues(int columnNumber) {
+		return GridUtils.getListOfInnerGrid(grid, columnNumber);
+	}
+
 }

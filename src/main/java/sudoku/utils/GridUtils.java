@@ -14,6 +14,10 @@ import sudoku.core.Sudoku;
 
 public class GridUtils {
 
+	/*
+	 * This value should not be changed. changing this value may lead to wrong
+	 * calculations or Exceptions in calculating fitness function.
+	 */
 	public static final int EMPTY_CELL = 0;
 
 	public static List<Integer> getListOfRow(List<List<Integer>> grid, int rowNumber) {

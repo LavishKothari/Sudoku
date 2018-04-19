@@ -30,4 +30,13 @@ public class NumberUtilsTest {
 		Assert.assertEquals(10000, NumberUtils.getSqureRoot(100000000));
 	}
 
+	@Test
+	public void factorialTest() {
+		Assert.assertEquals(24, NumberUtils.factorial(4));
+		Assert.assertEquals(1, NumberUtils.factorial(0));
+		Assert.assertEquals(1, NumberUtils.factorial(1));
+		Assert.assertEquals(2, NumberUtils.factorial(2));
+		Assert.assertEquals(3628800, NumberUtils.factorial(10));
+	}
+	
 }

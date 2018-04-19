@@ -44,12 +44,28 @@ public final class NumberUtils {
 		return mid;
 	}
 
+	/**
+	 * returns a shuffled list of integers from till to both inclusive
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	public static List<Integer> getShuffledList(int from, int to) {
 		List<Integer> resultList = new ArrayList<>(to - from + 1);
 		for (int i = from; i <= to; i++)
 			resultList.add(i);
 		Collections.shuffle(resultList);
 		return resultList;
+	}
+
+	public static long factorial(int n) {
+		if (n < 0)
+			throw new IllegalArgumentException("Arguments to factorial should be non-negative integer");
+		long f = 1;
+		for (int i = 1; i <= n; i++)
+			f = f * i;
+		return f;
 	}
 
 }
