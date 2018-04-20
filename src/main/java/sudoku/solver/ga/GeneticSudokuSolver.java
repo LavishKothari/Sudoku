@@ -3,6 +3,7 @@ package sudoku.solver.ga;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import sudoku.core.Sudoku;
 
@@ -52,18 +53,30 @@ public class GeneticSudokuSolver {
 	public boolean solve() {
 		sudoku.solveUsingDeterministicTechniques();
 
-		if(sudoku.isSolved()) {
+		if (sudoku.isSolved()) {
 			return true;
 		}
-		
+
 		List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm
 				.getRandomMayBeInvalidConformingSudokuList(numberOfInitialSolution, sudoku);
-		List<Double> distanceList = new ArrayList<>(sudokuList.size());
-		for (int i = 0; i < sudokuList.size(); i++) {
-			distanceList.add(DistanceCalculator.getDistanceFromSolution(sudokuList.get(i)));
-		}
 
-		System.out.println(distanceList);
+		SudokuChromosome.addAndRefreshProbabilityOfSelection(sudokuList);
+
+		Collections.sort(SudokuChromosome.getSudokuChromosomeList(), SudokuChromosome.SELECTION_PROBABILITY_COMPARATOR);
+		
+//		SudokuChromosome.getSudokuChromosomeList().stream()
+//				.forEach(e -> System.out.println(e.getProbabilityOfSelection()));
+//
+//		int selected = 0;
+//		for (int i = SudokuChromosome.getSudokuChromosomeList().size() - 1; i >= 0; i--) {
+//			double currentRandomNumber = new Random().nextDouble() / numberOfInitialSolution;
+//			if (currentRandomNumber < SudokuChromosome.getSudokuChromosomeList().get(i).getProbabilityOfSelection()) {
+//				selected++;
+//				System.out.println("selected with probability = "
+//						+ SudokuChromosome.getSudokuChromosomeList().get(i).getProbabilityOfSelection());
+//			}
+//		}
+//		System.out.println("selected = " + selected);
 		return false;
 	}
 
