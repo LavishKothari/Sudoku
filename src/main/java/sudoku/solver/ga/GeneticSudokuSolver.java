@@ -1,111 +1,70 @@
 package sudoku.solver.ga;
 
-import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import sudoku.core.Sudoku;
-import sudoku.utils.GridUtils;
-import sudoku.utils.NumberUtils;
 
 public class GeneticSudokuSolver {
 
-	private final static Logger logger = Logger.getLogger(GeneticSudokuSolver.class);
+	private int numberOfInitialSolution = 2000;
+	private int maximumNumberOfGenerations = 10000;
+	private double selectionRate = 0.30;
+	private double mutationRate = 0.08;
+	private int numberOfCrossOverPoints = 15;
 
-	public static double getDistanceFromSolution(Sudoku sudoku) {
-		int n = sudoku.getDimensionOfGrid();
-		double distance = 0.0;
+	private final int dimension;
 
-		for (int i = 0; i < n; i++) {
+	private final Sudoku sudoku;
 
-			List<Integer> rowList = sudoku.getRowValues(i);
-			List<Integer> colList = sudoku.getColumnValues(i);
-			List<Integer> gridList = sudoku.getInnerGridValues(i);
+	public GeneticSudokuSolver(Sudoku sudoku) {
+		super();
+		this.sudoku = sudoku;
+		dimension = sudoku.getDimensionOfGrid();
+	}
 
-			distance += getDistanceOfHouseBySum(sudoku, rowList);
-			distance += getDistanceOfHouseBySum(sudoku, colList);
-			distance += getDistanceOfHouseBySum(sudoku, gridList);
+	public GeneticSudokuSolver numberOfInitialSolution(int numberOfInitialSolution) {
+		this.numberOfInitialSolution = numberOfInitialSolution;
+		return this;
+	}
 
-			distance += getDistanceOfHouseByProduct(sudoku, rowList);
-			distance += getDistanceOfHouseByProduct(sudoku, colList);
-			distance += getDistanceOfHouseByProduct(sudoku, gridList);
+	public GeneticSudokuSolver maximumNumberOfGenerations(int maximumNumberOfGenerations) {
+		this.maximumNumberOfGenerations = maximumNumberOfGenerations;
+		return this;
+	}
 
-			distance += getDistanceOfHouseByDistinctCount(sudoku, rowList);
-			distance += getDistanceOfHouseByDistinctCount(sudoku, colList);
-			distance += getDistanceOfHouseByDistinctCount(sudoku, gridList);
+	public GeneticSudokuSolver selectionRate(int selectionRate) {
+		this.selectionRate = selectionRate;
+		return this;
+	}
+
+	public GeneticSudokuSolver mutationRate(int mutationRate) {
+		this.mutationRate = mutationRate;
+		return this;
+	}
+
+	public GeneticSudokuSolver numberOfCrossOverPoints(int numberOfCrossOverPoints) {
+		this.numberOfCrossOverPoints = numberOfCrossOverPoints;
+		return this;
+	}
+
+	public boolean solve() {
+		sudoku.solveUsingDeterministicTechniques();
+
+		if(sudoku.isSolved()) {
+			return true;
 		}
-		distance = Math.sqrt(distance);
-
-		List<Integer> wholeGridList = new ArrayList<>();
-		for (int i = 0; i < n; i++) {
-			wholeGridList.addAll(sudoku.getRowValues(i));
+		
+		List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm
+				.getRandomMayBeInvalidConformingSudokuList(numberOfInitialSolution, sudoku);
+		List<Double> distanceList = new ArrayList<>(sudokuList.size());
+		for (int i = 0; i < sudokuList.size(); i++) {
+			distanceList.add(DistanceCalculator.getDistanceFromSolution(sudokuList.get(i)));
 		}
 
-		// cost by seeing sum of whole grid
-		distance += getDistanceOfWholeGridBySum(sudoku, wholeGridList);
-
-		// cost by seeing the occurrence of each value in whole grid (will account for
-		// empty cells and push up the cost)
-		distance += getDistanceOfWholeGridByCount(sudoku, wholeGridList);
-		logger.info("distance = " + distance);
-		return distance;
-	}
-
-	private static double getDistanceOfHouseBySum(Sudoku sudoku, List<Integer> list) {
-		int n = sudoku.getDimensionOfGrid();
-		int requiredSumOfEachHouse = (n * (n + 1)) / 2;
-		int obtainedSum = list.stream().mapToInt(x -> x.intValue()).sum();
-		double sumCost = Math.sqrt((requiredSumOfEachHouse - obtainedSum) * (requiredSumOfEachHouse - obtainedSum));
-		return Math.sqrt(sumCost);
-	}
-
-	private static double getDistanceOfHouseByProduct(Sudoku sudoku, List<Integer> list) {
-		int n = sudoku.getDimensionOfGrid();
-		long requiredProductOfEachHouse = NumberUtils.factorial(n);
-		long obtainedProduct = list.stream().mapToLong(x -> x.longValue()).reduce(1, (x, y) -> x * y);
-		double sumCost = Math.sqrt((requiredProductOfEachHouse - obtainedProduct) * (requiredProductOfEachHouse - obtainedProduct));
-		return Math.pow(sumCost,1.0/n);
-	}
-
-	private static double getDistanceOfHouseByDistinctCount(Sudoku sudoku, List<Integer> list) {
-		int n = sudoku.getDimensionOfGrid();
-		int count = (int) list.stream().filter(x -> x != GridUtils.EMPTY_CELL).mapToInt(x -> x.intValue()).distinct()
-				.count();
-		return Math.sqrt((n - count) * (n - count));
-	}
-
-	private static double getDistanceOfWholeGridBySum(Sudoku sudoku, List<Integer> wholeGridList) {
-		int n = sudoku.getDimensionOfGrid();
-		int requiredWholeGridSum = ((n * (n + 1)) / 2) * n;
-		int obtainedSum = wholeGridList.stream().mapToInt(x -> x.intValue()).sum();
-		double sumCost = Math.sqrt((requiredWholeGridSum - obtainedSum) * (requiredWholeGridSum - obtainedSum));
-		return Math.pow(sumCost, 1.0 / 3.0);
-	}
-
-	private static double getDistanceOfWholeGridByCount(Sudoku sudoku, List<Integer> wholeGridList) {
-		int n = sudoku.getDimensionOfGrid();
-		double cost = 0.0;
-		// the following loop assumes that GridUtils.EMPTY_CELL = 0
-		for (int i = 0; i <= n; i++) {
-			final int j = i;
-			int occurrence = (int) wholeGridList.stream().mapToInt(x -> x.intValue()).filter(x -> x == j).count();
-			// there should be no occurrences of 0
-			if (i == 0) {
-				cost += occurrence;
-			} else {
-				cost += Math.sqrt((n - occurrence) * (n - occurrence));
-			}
-		}
-		return Math.sqrt(cost);
-	}
-
-	public static double getMaximumDistance(int dimension) {
-		String str = CharBuffer.allocate(dimension * dimension).toString().replace('\0', '0');
-		Sudoku s = new Sudoku(str);
-		System.out.println(s);
-		return getDistanceFromSolution(s);
+		System.out.println(distanceList);
+		return false;
 	}
 
 }

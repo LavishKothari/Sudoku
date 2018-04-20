@@ -669,11 +669,15 @@ public class Sudoku {
 	}
 
 	public List<Integer> getInnerGridValues(int innerGridNumber) {
-		return GridUtils.getListOfColumn(grid, innerGridNumber);
+		return GridUtils.getListOfInnerGrid(grid, innerGridNumber);
+	}
+	
+	public List<Integer> getInnerGridValues(int innerGridNumber, boolean includeEmptyCells) {
+		return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, true);
 	}
 
 	public List<Integer> getColumnValues(int columnNumber) {
-		return GridUtils.getListOfInnerGrid(grid, columnNumber);
+		return GridUtils.getListOfColumn(grid, columnNumber);
 	}
 
 }
