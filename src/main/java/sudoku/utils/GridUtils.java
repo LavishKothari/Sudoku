@@ -12,13 +12,24 @@ import java.util.stream.Collectors;
 
 import sudoku.core.Sudoku;
 
-public class GridUtils {
+public final class GridUtils {
 
 	/*
 	 * This value should not be changed. changing this value may lead to wrong
 	 * calculations or Exceptions in calculating fitness function.
 	 */
 	public static final int EMPTY_CELL = 0;
+
+	/*
+	 * We don't want to instantiate this class
+	 */
+	private GridUtils() {
+		/*
+		 * avoids accidental calls from within the class and also guards against
+		 * reflection
+		 */
+		throw new UnsupportedOperationException("This class should not be instantiated");
+	}
 
 	public static List<Integer> getListOfRow(List<List<Integer>> grid, int rowNumber) {
 		List<Integer> list = new ArrayList<>();

@@ -6,8 +6,15 @@ import java.util.List;
 
 public final class NumberUtils {
 
+	/*
+	 * We don't want to instantiate this class
+	 */
 	private NumberUtils() {
-
+		/*
+		 * avoids accidental calls from within the class and also guards against
+		 * reflection
+		 */
+		throw new UnsupportedOperationException("This class should not be instantiated");
 	}
 
 	public static boolean isPerfectSquare(long n) {

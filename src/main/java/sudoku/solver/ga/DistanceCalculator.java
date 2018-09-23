@@ -10,9 +10,20 @@ import sudoku.core.Sudoku;
 import sudoku.utils.GridUtils;
 import sudoku.utils.NumberUtils;
 
-public class DistanceCalculator {
+final public class DistanceCalculator {
 
 	private final static Logger logger = Logger.getLogger(DistanceCalculator.class);
+
+	/*
+	 * We don't want to instantiate this class
+	 */
+	private DistanceCalculator() {
+		/*
+		 * avoids accidental calls from within the class and also guards against
+		 * reflection
+		 */
+		throw new UnsupportedOperationException("This class should not be instantiated");
+	}
 
 	public static double getDistanceFromSolution(Sudoku sudoku) {
 		int n = sudoku.getDimensionOfGrid();

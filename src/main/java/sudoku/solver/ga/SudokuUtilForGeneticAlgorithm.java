@@ -9,7 +9,18 @@ import sudoku.core.Sudoku;
 import sudoku.utils.GridUtils;
 import sudoku.utils.NumberUtils;
 
-public class SudokuUtilForGeneticAlgorithm {
+final public class SudokuUtilForGeneticAlgorithm {
+
+	/*
+	 * We don't want to instantiate this class
+	 */
+	private SudokuUtilForGeneticAlgorithm() {
+		/*
+		 * avoids accidental calls from within the class and also guards against
+		 * reflection
+		 */
+		throw new UnsupportedOperationException("This class should not be instantiated");
+	}
 
 	private static void setInnerGridUsingList(Sudoku sudoku, int innerGridNumber, List<Integer> list) {
 		int dimensionOfGrid = sudoku.getDimensionOfGrid();
