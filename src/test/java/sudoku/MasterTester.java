@@ -6,12 +6,19 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import sudoku.core.CustomSudokuSolverTest;
 import sudoku.core.SudokuTest;
+import sudoku.solver.ga.SudokuChromosomeTest;
+import sudoku.solver.ga.SudokuUtilForGeneticAlgorithmTest;
 import sudoku.utils.GridUtilsTest;
 import sudoku.utils.NumberUtilsTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ GridUtilsTest.class, NumberUtilsTest.class, SudokuTest.class, CustomSudokuSolverTest.class,
-		IntegrationTest.class })
+@SuiteClasses({ CustomSudokuSolverTest.class,
+				SudokuTest.class, 
+				NumberUtilsTest.class, 
+				GridUtilsTest.class, 
+				SudokuChromosomeTest.class,
+				SudokuUtilForGeneticAlgorithmTest.class,
+				IntegrationTest.class })
 public final class MasterTester {
 
 }

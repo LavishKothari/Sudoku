@@ -1,13 +1,15 @@
 package sudoku.solver.ga;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import sudoku.core.Sudoku;
 
 public class GeneticSudokuSolver {
 
-	private int numberOfInitialSolution = 2000;
+	private int solutionsInEachGeneration = 2000;
 	private int maximumNumberOfGenerations = 10000;
 	private double selectionRate = 0.30;
 	private double mutationRate = 0.08;
@@ -24,7 +26,7 @@ public class GeneticSudokuSolver {
 	}
 
 	public GeneticSudokuSolver numberOfInitialSolution(int numberOfInitialSolution) {
-		this.numberOfInitialSolution = numberOfInitialSolution;
+		this.solutionsInEachGeneration = numberOfInitialSolution;
 		return this;
 	}
 
@@ -50,36 +52,24 @@ public class GeneticSudokuSolver {
 
 	public boolean solve() {
 		sudoku.solveUsingDeterministicTechniques();
-
 		if (sudoku.isSolved()) {
 			return true;
 		}
-
 		List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm
-				.getRandomMayBeInvalidConformingSudokuList(numberOfInitialSolution, sudoku);
+				.getRandomMayBeInvalidConformingSudokuList(solutionsInEachGeneration, sudoku);
 
-		SudokuChromosome.addAndRefreshProbabilityOfSelection(sudokuList);
+		for (int i = 0; i < maximumNumberOfGenerations; i++) {
 
-		Collections.sort(SudokuChromosome.getSudokuChromosomeList(), SudokuChromosome.SELECTION_PROBABILITY_COMPARATOR);
+			// TODO: check if any sudoku in sodokuList is solved correctly, if yes, then
+			// return true
 
-		// SudokuChromosome.getSudokuChromosomeList().stream()
-		// .forEach(e -> System.out.println(e.getProbabilityOfSelection()));
-		//
-		// int selected = 0;
-		// for (int i = SudokuChromosome.getSudokuChromosomeList().size() - 1; i >= 0;
-		// i--) {
-		// double currentRandomNumber = new Random().nextDouble() /
-		// numberOfInitialSolution;
-		// if (currentRandomNumber <
-		// SudokuChromosome.getSudokuChromosomeList().get(i).getProbabilityOfSelection())
-		// {
-		// selected++;
-		// System.out.println("selected with probability = "
-		// +
-		// SudokuChromosome.getSudokuChromosomeList().get(i).getProbabilityOfSelection());
-		// }
-		// }
-		// System.out.println("selected = " + selected);
+			List<Sudoku> selectedSudokus = GeneticAlgorithmSelectionUtils.getSelectedFitSudokus(sudokuList,
+					selectionRate);
+
+			// TODO: perform breeding of selected sudokus
+			// TODO: perform mutation of sudokus resulted from breeding
+			// TODO: Initialise sudokuList with the result of mutation
+		}
 		return false;
 	}
 

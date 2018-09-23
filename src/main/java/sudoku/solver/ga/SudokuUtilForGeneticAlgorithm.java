@@ -59,6 +59,9 @@ final public class SudokuUtilForGeneticAlgorithm {
 		return list;
 	}
 
+	/*
+	 * Conforming only in terms of inner-grid
+	 */
 	private static Sudoku getConformingSudoku(Sudoku sudoku) {
 		int dimension = sudoku.getDimensionOfGrid();
 		String str = CharBuffer.allocate(dimension * dimension).toString().replace('\0', '0');

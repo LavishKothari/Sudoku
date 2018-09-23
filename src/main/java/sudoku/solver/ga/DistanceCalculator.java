@@ -25,6 +25,12 @@ final public class DistanceCalculator {
 		throw new UnsupportedOperationException("This class should not be instantiated");
 	}
 
+	public static double getMaximumDistance(int dimension) {
+		String str = CharBuffer.allocate(dimension * dimension).toString().replace('\0', '0');
+		Sudoku s = new Sudoku(str);
+		return getDistanceFromSolution(s);
+	}
+
 	public static double getDistanceFromSolution(Sudoku sudoku) {
 		int n = sudoku.getDimensionOfGrid();
 		double distance = 0.0;
@@ -66,6 +72,9 @@ final public class DistanceCalculator {
 
 	private static double getDistanceOfHouseBySum(Sudoku sudoku, List<Integer> list) {
 		int n = sudoku.getDimensionOfGrid();
+		if (n != list.size()) {
+			throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
+		}
 		int requiredSumOfEachHouse = (n * (n + 1)) / 2;
 		int obtainedSum = list.stream().mapToInt(x -> x.intValue()).sum();
 		double sumCost = Math.sqrt((requiredSumOfEachHouse - obtainedSum) * (requiredSumOfEachHouse - obtainedSum));
@@ -74,8 +83,12 @@ final public class DistanceCalculator {
 
 	private static double getDistanceOfHouseByProduct(Sudoku sudoku, List<Integer> list) {
 		int n = sudoku.getDimensionOfGrid();
+		if (n != list.size()) {
+			throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
+		}
 		long requiredProductOfEachHouse = NumberUtils.factorial(n);
-		long obtainedProduct = list.stream().mapToLong(x -> x.longValue()).reduce(1, (x, y) -> x * y);
+		long obtainedProduct = list.stream().filter(x -> x != GridUtils.EMPTY_CELL).mapToLong(x -> x.longValue())
+				.reduce(1, (x, y) -> x * y);
 		double sumCost = Math
 				.sqrt((requiredProductOfEachHouse - obtainedProduct) * (requiredProductOfEachHouse - obtainedProduct));
 		return Math.pow(sumCost, 1.0 / n);
@@ -83,6 +96,9 @@ final public class DistanceCalculator {
 
 	private static double getDistanceOfHouseByDistinctCount(Sudoku sudoku, List<Integer> list) {
 		int n = sudoku.getDimensionOfGrid();
+		if (n != list.size()) {
+			throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
+		}
 		int count = (int) list.stream().filter(x -> x != GridUtils.EMPTY_CELL).mapToInt(x -> x.intValue()).distinct()
 				.count();
 		return Math.sqrt((n - count) * (n - count));
@@ -111,12 +127,6 @@ final public class DistanceCalculator {
 			}
 		}
 		return Math.sqrt(cost);
-	}
-
-	public static double getMaximumDistance(int dimension) {
-		String str = CharBuffer.allocate(dimension * dimension).toString().replace('\0', '0');
-		Sudoku s = new Sudoku(str);
-		return getDistanceFromSolution(s);
 	}
 
 }
