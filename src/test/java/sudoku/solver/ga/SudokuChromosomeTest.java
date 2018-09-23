@@ -16,10 +16,8 @@ public class SudokuChromosomeTest {
 
 		SudokuChromosome.addAndRefreshProbabilityOfSelection(sudokuList);
 
-		double totalProbability = SudokuChromosome.getSudokuChromosomeList()
-				.stream()
-				.mapToDouble(x -> x.getProbabilityOfSelection())
-				.reduce(0.0, (x, y) -> x + y);
+		double totalProbability = SudokuChromosome.getSudokuChromosomeList().stream()
+				.mapToDouble(x -> x.getProbabilityOfSelection()).reduce(0.0, (x, y) -> x + y);
 
 		Assert.assertTrue(1.0 - totalProbability < 0.000001);
 	}

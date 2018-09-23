@@ -671,7 +671,7 @@ public class Sudoku {
 	public List<Integer> getInnerGridValues(int innerGridNumber) {
 		return GridUtils.getListOfInnerGrid(grid, innerGridNumber);
 	}
-	
+
 	public List<Integer> getInnerGridValues(int innerGridNumber, boolean includeEmptyCells) {
 		return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, true);
 	}

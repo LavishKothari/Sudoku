@@ -35,8 +35,9 @@ public class GridUtils {
 	public static List<Integer> getListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber) {
 		return getGenericListOfInnerGrid(grid, innerGridNumber, false);
 	}
-	
-	public static List<Integer> getGenericListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber, boolean includeEmptyCell) {
+
+	public static List<Integer> getGenericListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber,
+			boolean includeEmptyCell) {
 		int dimensionOfGrid = grid.size();
 		int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 

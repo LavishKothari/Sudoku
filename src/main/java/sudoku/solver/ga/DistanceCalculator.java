@@ -12,7 +12,7 @@ import sudoku.utils.NumberUtils;
 
 public class DistanceCalculator {
 
-	private final static Logger logger = Logger.getLogger(SudokuUtilForGeneticAlgorithm.class);
+	private final static Logger logger = Logger.getLogger(DistanceCalculator.class);
 
 	public static double getDistanceFromSolution(Sudoku sudoku) {
 		int n = sudoku.getDimensionOfGrid();

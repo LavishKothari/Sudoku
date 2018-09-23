@@ -38,5 +38,5 @@ public class NumberUtilsTest {
 		Assert.assertEquals(2, NumberUtils.factorial(2));
 		Assert.assertEquals(3628800, NumberUtils.factorial(10));
 	}
-	
+
 }
