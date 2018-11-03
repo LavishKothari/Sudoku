@@ -6,12 +6,17 @@ import java.util.List;
 
 import sudoku.core.Sudoku;
 
-public class SudokuChromosome {
+public class SudokuChromosome implements WeightedEntity {
 	private final Sudoku sudoku;
 	private final double inverseDistance;
 	private double probabilityOfSelection;
 
 	public double getProbabilityOfSelection() {
+		return probabilityOfSelection;
+	}
+	
+	@Override
+	public double getWeight() {
 		return probabilityOfSelection;
 	}
 
