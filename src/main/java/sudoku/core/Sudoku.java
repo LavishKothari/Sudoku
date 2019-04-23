@@ -320,14 +320,14 @@ public class Sudoku {
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
         List<Integer> innerGridList = GridUtils.getListOfInnerGrid(grid, innerGridNumber);
 
-        Set<Integer> elements = new HashSet<>();
-        for (int e : rowList) elements.add(e);
-        for (int e : colList) elements.add(e);
-        for (int e : innerGridList) elements.add(e);
+        BitSet elements = new BitSet();
+        for (int e : rowList) elements.set(e);
+        for (int e : colList) elements.set(e);
+        for (int e : innerGridList) elements.set(e);
 
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
-            if (!elements.contains(i + 1))
+            if (!elements.get(i + 1))
                 resultList.add(i + 1);
         }
         return resultList;
@@ -429,7 +429,6 @@ public class Sudoku {
 
     /**
      * @param row
-     * @param digit
      * @return a list of list such that possibleIndices.get(0) will represents list
      * of co-ordinates where 1 can be safely filled, <br/>
      * possibleIndices.get(1) will represents list of indices where 2 can be
@@ -459,7 +458,7 @@ public class Sudoku {
     private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInColumn(int col) {
         List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
         for (int i = 0; i < this.getDimensionOfGrid(); i++)
-            possibleIndices.add(new ArrayList<>());
+            possibleIndices.add(new ArrayList<>(this.getDimensionOfGrid()));
 
         for (int i = 0; i < this.getDimensionOfGrid(); i++) {
             for (final Integer currentValue : getPossibleValues(i, col)) {

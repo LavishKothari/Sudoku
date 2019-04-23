@@ -14,7 +14,7 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     }
 
     public static List<CoOrdinate> getCoOrdinateListOfRow(int row, int dimensionOfGrid) {
-        List<CoOrdinate> result = new ArrayList<>();
+        List<CoOrdinate> result = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
             result.add(new CoOrdinate(row, i));
         }
@@ -22,7 +22,7 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     }
 
     public static List<CoOrdinate> getCoOrdinateListOfColumn(int col, int dimensionOfGrid) {
-        List<CoOrdinate> result = new ArrayList<>();
+        List<CoOrdinate> result = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
             result.add(new CoOrdinate(i, col));
         }
@@ -31,7 +31,7 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
 
     public static List<CoOrdinate> getCoOrdinateListOfInnerGrid(int innerGridNumber, int dimensionOfGrid) {
         if (NumberUtils.isPerfectSquare(dimensionOfGrid)) {
-            List<CoOrdinate> result = new ArrayList<>();
+            List<CoOrdinate> result = new ArrayList<>(dimensionOfGrid);
 
             int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
 

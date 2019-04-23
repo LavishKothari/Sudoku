@@ -40,7 +40,7 @@ public final class GridUtils {
     }
 
     public static List<Integer> getListOfColumn(List<List<Integer>> grid, int columnNumber) {
-        List<Integer> resultList = new ArrayList<>();
+        List<Integer> resultList = new ArrayList<>(grid.size());
         for (int i = 0; i < grid.size(); i++) {
             if (grid.get(i).get(columnNumber) != GridUtils.EMPTY_CELL)
                 resultList.add(grid.get(i).get(columnNumber));
@@ -62,7 +62,7 @@ public final class GridUtils {
         int startXIndex = X * dimensionOfInnerGrid;
         int startYIndex = Y * dimensionOfInnerGrid;
 
-        List<Integer> resultList = new ArrayList<>();
+        List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
             for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
                 if (includeEmptyCell || grid.get(i).get(j) != GridUtils.EMPTY_CELL)
