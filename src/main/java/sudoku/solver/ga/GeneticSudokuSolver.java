@@ -1,76 +1,71 @@
 package sudoku.solver.ga;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 import sudoku.core.Sudoku;
+
+import java.util.List;
 
 public class GeneticSudokuSolver {
 
-	private int solutionsInEachGeneration = 2000;
-	private int maximumNumberOfGenerations = 10000;
-	private double selectionRate = 0.30;
-	private double mutationRate = 0.08;
-	private int numberOfCrossOverPoints = 15;
+    private final int dimension;
+    private final Sudoku sudoku;
+    private int solutionsInEachGeneration = 2000;
+    private int maximumNumberOfGenerations = 10000;
+    private double selectionRate = 0.30;
+    private double mutationRate = 0.08;
+    private int numberOfCrossOverPoints = 15;
 
-	private final int dimension;
+    public GeneticSudokuSolver(Sudoku sudoku) {
+        super();
+        this.sudoku = sudoku;
+        dimension = sudoku.getDimensionOfGrid();
+    }
 
-	private final Sudoku sudoku;
+    public GeneticSudokuSolver numberOfInitialSolution(int numberOfInitialSolution) {
+        this.solutionsInEachGeneration = numberOfInitialSolution;
+        return this;
+    }
 
-	public GeneticSudokuSolver(Sudoku sudoku) {
-		super();
-		this.sudoku = sudoku;
-		dimension = sudoku.getDimensionOfGrid();
-	}
+    public GeneticSudokuSolver maximumNumberOfGenerations(int maximumNumberOfGenerations) {
+        this.maximumNumberOfGenerations = maximumNumberOfGenerations;
+        return this;
+    }
 
-	public GeneticSudokuSolver numberOfInitialSolution(int numberOfInitialSolution) {
-		this.solutionsInEachGeneration = numberOfInitialSolution;
-		return this;
-	}
+    public GeneticSudokuSolver selectionRate(int selectionRate) {
+        this.selectionRate = selectionRate;
+        return this;
+    }
 
-	public GeneticSudokuSolver maximumNumberOfGenerations(int maximumNumberOfGenerations) {
-		this.maximumNumberOfGenerations = maximumNumberOfGenerations;
-		return this;
-	}
+    public GeneticSudokuSolver mutationRate(int mutationRate) {
+        this.mutationRate = mutationRate;
+        return this;
+    }
 
-	public GeneticSudokuSolver selectionRate(int selectionRate) {
-		this.selectionRate = selectionRate;
-		return this;
-	}
+    public GeneticSudokuSolver numberOfCrossOverPoints(int numberOfCrossOverPoints) {
+        this.numberOfCrossOverPoints = numberOfCrossOverPoints;
+        return this;
+    }
 
-	public GeneticSudokuSolver mutationRate(int mutationRate) {
-		this.mutationRate = mutationRate;
-		return this;
-	}
+    public boolean solve() {
+        sudoku.solveUsingDeterministicTechniques();
+        if (sudoku.isSolved()) {
+            return true;
+        }
+        List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm
+                .getRandomMayBeInvalidConformingSudokuList(solutionsInEachGeneration, sudoku);
 
-	public GeneticSudokuSolver numberOfCrossOverPoints(int numberOfCrossOverPoints) {
-		this.numberOfCrossOverPoints = numberOfCrossOverPoints;
-		return this;
-	}
+        for (int i = 0; i < maximumNumberOfGenerations; i++) {
 
-	public boolean solve() {
-		sudoku.solveUsingDeterministicTechniques();
-		if (sudoku.isSolved()) {
-			return true;
-		}
-		List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm
-				.getRandomMayBeInvalidConformingSudokuList(solutionsInEachGeneration, sudoku);
+            // TODO: check if any sudoku in sodokuList is solved correctly, if yes, then
+            // return true
 
-		for (int i = 0; i < maximumNumberOfGenerations; i++) {
+            List<Sudoku> selectedSudokus = GeneticAlgorithmSelectionUtils.getSelectedFitSudokus(sudokuList,
+                    selectionRate);
 
-			// TODO: check if any sudoku in sodokuList is solved correctly, if yes, then
-			// return true
-
-			List<Sudoku> selectedSudokus = GeneticAlgorithmSelectionUtils.getSelectedFitSudokus(sudokuList,
-					selectionRate);
-
-			// TODO: perform breeding of selected sudokus
-			// TODO: perform mutation of sudokus resulted from breeding
-			// TODO: Initialise sudokuList with the result of mutation
-		}
-		return false;
-	}
+            // TODO: perform breeding of selected sudokus
+            // TODO: perform mutation of sudokus resulted from breeding
+            // TODO: Initialise sudokuList with the result of mutation
+        }
+        return false;
+    }
 
 }
