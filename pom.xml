@@ -25,13 +25,6 @@
 			<version>4.12</version>
 		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.carrotsearch/hppc -->
-        <dependency>
-            <groupId>com.carrotsearch</groupId>
-            <artifactId>hppc</artifactId>
-            <version>0.8.1</version>
-        </dependency>
-
 	</dependencies>
 
 	<build>

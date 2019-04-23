@@ -1,7 +1,5 @@
 package sudoku.core;
 
-import com.carrotsearch.hppc.IntHashSet;
-import com.carrotsearch.hppc.IntSet;
 import org.apache.log4j.Logger;
 import sudoku.utils.CoOrdinate;
 import sudoku.utils.GridUtils;
@@ -10,9 +8,7 @@ import sudoku.utils.NumberUtils;
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sudoku {
@@ -324,7 +320,7 @@ public class Sudoku {
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
         List<Integer> innerGridList = GridUtils.getListOfInnerGrid(grid, innerGridNumber);
 
-        IntSet elements = new IntHashSet();
+        Set<Integer> elements = new HashSet<>();
         for (int e : rowList) elements.add(e);
         for (int e : colList) elements.add(e);
         for (int e : innerGridList) elements.add(e);
