@@ -6,6 +6,19 @@ import java.util.List;
 
 public final class NumberUtils {
 
+    private static final int PERFECT_SQUARE_CACHE_SIZE = 10;
+    private static final int[] perfectSquare;
+
+    static {
+        perfectSquare = new int[PERFECT_SQUARE_CACHE_SIZE * PERFECT_SQUARE_CACHE_SIZE + 1];
+        for (int i = 0; i <= PERFECT_SQUARE_CACHE_SIZE * PERFECT_SQUARE_CACHE_SIZE; i++) {
+            perfectSquare[i] = -1;
+        }
+        for (int i = 0; i <= PERFECT_SQUARE_CACHE_SIZE; i++) {
+            perfectSquare[i * i] = i;
+        }
+    }
+
     /*
      * We don't want to instantiate this class
      */
@@ -33,6 +46,9 @@ public final class NumberUtils {
     }
 
     public static long getSqureRoot(long n) {
+        if (n <= PERFECT_SQUARE_CACHE_SIZE * PERFECT_SQUARE_CACHE_SIZE &&
+                perfectSquare[(int) n] != -1)
+            return perfectSquare[(int) n];
         long start = 1, end = n;
         long mid = (start + end) / 2;
         while (start <= end) {

@@ -1,5 +1,7 @@
 package sudoku.core;
 
+import com.carrotsearch.hppc.IntHashSet;
+import com.carrotsearch.hppc.IntSet;
 import org.apache.log4j.Logger;
 import sudoku.utils.CoOrdinate;
 import sudoku.utils.GridUtils;
@@ -8,7 +10,9 @@ import sudoku.utils.NumberUtils;
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Sudoku {
@@ -313,24 +317,24 @@ public class Sudoku {
      */
     public List<Integer> getPossibleValues(int row, int col) {
         if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL)
-            return Arrays.asList();
-
+            return Collections.EMPTY_LIST;
         List<Integer> rowList = GridUtils.getListOfRow(grid, row);
         List<Integer> colList = GridUtils.getListOfColumn(grid, col);
 
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
         List<Integer> innerGridList = GridUtils.getListOfInnerGrid(grid, innerGridNumber);
 
-        Set<Integer> elements = new HashSet<>();
-        elements.addAll(rowList);
-        elements.addAll(colList);
-        elements.addAll(innerGridList);
+        IntSet elements = new IntHashSet();
+        for (int e : rowList) elements.add(e);
+        for (int e : colList) elements.add(e);
+        for (int e : innerGridList) elements.add(e);
 
-        List<Integer> resultList = new ArrayList<>();
-        for (int i = 0; i < dimensionOfGrid; i++)
-            resultList.add(i + 1);
-
-        return resultList.stream().filter(e -> !elements.contains(e)).collect(Collectors.toList());
+        List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
+        for (int i = 0; i < dimensionOfGrid; i++) {
+            if (!elements.contains(i + 1))
+                resultList.add(i + 1);
+        }
+        return resultList;
     }
 
     /**
@@ -446,7 +450,7 @@ public class Sudoku {
     private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInRow(int row) {
         List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
         for (int i = 0; i < this.getDimensionOfGrid(); i++)
-            possibleIndices.add(new ArrayList<CoOrdinate>());
+            possibleIndices.add(new ArrayList<>());
 
         for (int j = 0; j < this.getDimensionOfGrid(); j++) {
             for (final Integer currentValue : getPossibleValues(row, j)) {
@@ -459,7 +463,7 @@ public class Sudoku {
     private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInColumn(int col) {
         List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
         for (int i = 0; i < this.getDimensionOfGrid(); i++)
-            possibleIndices.add(new ArrayList<CoOrdinate>());
+            possibleIndices.add(new ArrayList<>());
 
         for (int i = 0; i < this.getDimensionOfGrid(); i++) {
             for (final Integer currentValue : getPossibleValues(i, col)) {
@@ -472,7 +476,7 @@ public class Sudoku {
     private List<List<CoOrdinate>> getIndicesWhereDigitsCanBePlacedInInnerBlock(int innerGridNumber) {
         List<List<CoOrdinate>> possibleIndices = new ArrayList<>(this.getDimensionOfGrid());
         for (int i = 0; i < this.getDimensionOfGrid(); i++)
-            possibleIndices.add(new ArrayList<CoOrdinate>());
+            possibleIndices.add(new ArrayList<>());
 
         int Y = innerGridNumber % dimensionOfInnerGrid;
         int X = innerGridNumber / dimensionOfInnerGrid;

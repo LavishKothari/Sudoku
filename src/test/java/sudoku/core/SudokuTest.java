@@ -91,7 +91,10 @@ public class SudokuTest {
         Assert.assertTrue(s.isValid());
         Assert.assertTrue(s.hasUniqueSolution());
 
-        new CustomSudokuSolver(s).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+        new CustomSudokuSolver(s)
+                .alwaysCalculatingCellWithLeastPossibility(true)
+                .randomize(true)
+                .solve();
 
         Assert.assertTrue(s.isSolved());
     }

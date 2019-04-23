@@ -45,7 +45,6 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
                     result.add(new CoOrdinate(i, j));
                 }
             }
-
             return result;
         } else {
             throw new RuntimeException("The dimension of grid should be a perfect square!");

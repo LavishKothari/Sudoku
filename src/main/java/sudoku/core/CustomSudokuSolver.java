@@ -152,7 +152,6 @@ public class CustomSudokuSolver {
             }
         }
         return solved;
-
     }
 
     private boolean solveHelper(Sudoku currentSudoku, int currentIndex, long startTimer) {

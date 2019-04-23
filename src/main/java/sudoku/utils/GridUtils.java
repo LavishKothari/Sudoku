@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class GridUtils {
 
@@ -32,15 +31,21 @@ public final class GridUtils {
     }
 
     public static List<Integer> getListOfRow(List<List<Integer>> grid, int rowNumber) {
-        List<Integer> list = new ArrayList<>();
-        grid.get(rowNumber).stream().filter(e -> e != GridUtils.EMPTY_CELL).forEach(e -> list.add(e));
-        return list;
+        List<Integer> result = new ArrayList<>(grid.size());
+        for (int i = 0; i < grid.get(rowNumber).size(); i++) {
+            if (grid.get(rowNumber).get(i) != GridUtils.EMPTY_CELL)
+                result.add(grid.get(rowNumber).get(i));
+        }
+        return result;
     }
 
     public static List<Integer> getListOfColumn(List<List<Integer>> grid, int columnNumber) {
         List<Integer> resultList = new ArrayList<>();
-        grid.forEach(currentList -> resultList.add(currentList.get(columnNumber)));
-        return resultList.stream().filter(e -> e != GridUtils.EMPTY_CELL).collect(Collectors.toList());
+        for (int i = 0; i < grid.size(); i++) {
+            if (grid.get(i).get(columnNumber) != GridUtils.EMPTY_CELL)
+                resultList.add(grid.get(i).get(columnNumber));
+        }
+        return resultList;
     }
 
     public static List<Integer> getListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber) {
@@ -89,7 +94,9 @@ public final class GridUtils {
         /*
          * applying filter in the next line to avoid any index out of bounds.
          */
-        list.stream().filter(e -> e > 0).forEach(e -> flag.set(e - 1, flag.get(e - 1) + 1));
+        list.stream()
+                .filter(e -> e > 0)
+                .forEach(e -> flag.set(e - 1, flag.get(e - 1) + 1));
         return flag.stream().allMatch(e -> e == 1);
     }
 
@@ -107,8 +114,11 @@ public final class GridUtils {
         List<Integer> flag = new ArrayList<>(list.size());
         while (flag.size() < maxValue)
             flag.add(0);
-        list.stream().filter(e -> e > 0).forEach(e -> flag.set(e - 1, flag.get(e - 1) + 1));
-        return flag.stream().allMatch(e -> e == 0 || e == 1);
+        list.stream()
+                .filter(e -> e > 0)
+                .forEach(e -> flag.set(e - 1, flag.get(e - 1) + 1));
+        return flag.stream()
+                .allMatch(e -> e == 0 || e == 1);
     }
 
     /**
@@ -117,7 +127,7 @@ public final class GridUtils {
      * <p>
      * Note that the inner grids are numbered starting from 0.
      *
-     * @param grid
+     * @param dimensionOfGrid
      * @param row
      * @param col
      * @return
