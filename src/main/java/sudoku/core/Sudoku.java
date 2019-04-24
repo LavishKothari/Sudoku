@@ -95,7 +95,7 @@ public class Sudoku {
         for (int i = 0; i < n; i++) {
             grid.add(new ArrayList<Integer>(n));
             for (int j = 0; j < n; j++) {
-                grid.get(i).add(GridUtils.EMPTY_CELL);
+                grid.get(i).add(GridUtils.EMPTY_CELL_VALUE);
             }
         }
         Sudoku sudoku = new Sudoku(grid);
@@ -123,7 +123,7 @@ public class Sudoku {
             int col = currentRandomIndex % dimension;
             Integer toBeReplaced = s.getCellValue(row, col);
 
-            s.setCellValue(row, col, GridUtils.EMPTY_CELL);
+            s.setCellValue(row, col, GridUtils.EMPTY_CELL_VALUE);
             if (!s.hasUniqueSolution()) {
                 s.setCellValue(row, col, toBeReplaced);
             }
@@ -155,7 +155,10 @@ public class Sudoku {
         while (System.currentTimeMillis() - startTime < timeOut) {
             Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(dimension);
             s.writeSudokuToFile(puzzleFileName, StandardOpenOption.APPEND);
-            new CustomSudokuSolver(s).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+            new CustomSudokuSolver(s)
+                    .alwaysCalculatingCellWithLeastPossibility(true)
+                    .randomize(true)
+                    .solve();
             s.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
             counter++;
         }
@@ -312,7 +315,7 @@ public class Sudoku {
      * the cell is already filled returns an empty list.
      */
     public List<Integer> getPossibleValues(int row, int col) {
-        if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL)
+        if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return Collections.EMPTY_LIST;
         List<Integer> rowList = GridUtils.getListOfRow(grid, row);
         List<Integer> colList = GridUtils.getListOfColumn(grid, col);
@@ -357,7 +360,7 @@ public class Sudoku {
     }
 
     public void clearCell(int row, int col) {
-        setCellValue(row, col, GridUtils.EMPTY_CELL);
+        setCellValue(row, col, GridUtils.EMPTY_CELL_VALUE);
     }
 
     @Override
@@ -382,7 +385,7 @@ public class Sudoku {
             return false;
         for (int i = 0; i < dimensionOfGrid; i++) {
             for (int j = 0; j < dimensionOfGrid; j++) {
-                if (unsolvedSudoku.getCellValue(i, j) != GridUtils.EMPTY_CELL
+                if (unsolvedSudoku.getCellValue(i, j) != GridUtils.EMPTY_CELL_VALUE
                         && this.getCellValue(i, j) != unsolvedSudoku.getCellValue(i, j)) {
                     return false;
                 }

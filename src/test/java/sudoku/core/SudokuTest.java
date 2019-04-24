@@ -134,7 +134,12 @@ public class SudokuTest {
         String solutionFileName = "sudoku_solution_generated.txt";
 
         // generating puzzles and solutions for 20 seconds
-        int appendedSudokus = Sudoku.appendRandomGeneratedSudoku(9, puzzleFileName, solutionFileName, 20000);
+        int appendedSudokus = Sudoku
+                .appendRandomGeneratedSudoku(9,
+                        puzzleFileName,
+                        solutionFileName,
+                        20000);
+        System.out.println("# of generated sudokus: "+appendedSudokus);
         List<Sudoku> unsolvedSudokuList = Sudoku.getSudokusFromFile(puzzleFileName);
         List<Sudoku> solvedSudokuList = Sudoku.getSudokusFromFile(solutionFileName);
 

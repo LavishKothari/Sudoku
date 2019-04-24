@@ -29,10 +29,10 @@ public class SudokuUtilForGeneticAlgorithmTest {
             for (int j = 0; j < original.getDimensionOfGrid(); j++) {
                 int originalValue = original.getCellValue(i, j);
                 int obtainedValue = obtained.getCellValue(i, j);
-                if (originalValue != GridUtils.EMPTY_CELL && originalValue != obtainedValue) {
+                if (originalValue != GridUtils.EMPTY_CELL_VALUE && originalValue != obtainedValue) {
                     return false;
                 }
-                if (obtainedValue == GridUtils.EMPTY_CELL) {
+                if (obtainedValue == GridUtils.EMPTY_CELL_VALUE) {
                     return false;
                 }
             }

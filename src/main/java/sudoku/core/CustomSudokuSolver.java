@@ -166,7 +166,7 @@ public class CustomSudokuSolver {
         int row = currentCell / currentSudoku.getDimensionOfGrid();
         int col = currentCell % currentSudoku.getDimensionOfGrid();
 
-        if (currentSudoku.getCellValue(row, col) != GridUtils.EMPTY_CELL)
+        if (currentSudoku.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return solveHelper(currentSudoku, currentIndex + 1, startTimer);
 
         List<Integer> possibleValues = currentSudoku.getPossibleValues(row, col);
@@ -197,7 +197,7 @@ public class CustomSudokuSolver {
             if (solveHelper(currentSudoku, currentIndex + 1, startTimer))
                 return true;
             // backtracking
-            // currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL);
+            // currentSudoku.setCellValue(row, col, GridUtils.EMPTY_CELL_VALUE);
             currentSudoku.setGrid(previousGrid);
         }
         return false;

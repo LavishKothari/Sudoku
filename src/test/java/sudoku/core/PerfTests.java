@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PerfTests {
+    /**
+     * To generate and solve around 200 sudokus,
+     * it takes about 16-20 seconds
+     */
     @Test
     public void perfTest() {
-        for (int i = 0; i < 1000000; i++) {
+        long start = System.nanoTime();
+        for (int i = 0; i < 200; i++) {
             Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(9);
             Assert.assertTrue(s.isValid());
             Assert.assertTrue(s.hasUniqueSolution());
@@ -23,6 +28,8 @@ public class PerfTests {
 
             Assert.assertTrue(s.isSolved());
         }
+        double total = (System.nanoTime() - start) / 1000000.0;
+        System.out.println("total time = " + total / 1000.0 + " seconds");
     }
 
     @Test
@@ -51,6 +58,6 @@ public class PerfTests {
             Assert.assertTrue(currentSudoku.isSolved());
         }
         double total = (System.nanoTime() - start) / 1000000.0;
-        System.out.println("total time = " + total);
+        System.out.println("total time = " + total / 1000.0 + " seconds");
     }
 }

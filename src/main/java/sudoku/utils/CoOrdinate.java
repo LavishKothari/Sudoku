@@ -1,9 +1,13 @@
 package sudoku.utils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CoOrdinate implements Comparable<CoOrdinate> {
+    public static final Comparator<CoOrdinate> XY_COMPARATOR =
+            Comparator.comparing(CoOrdinate::getX)
+                    .thenComparing(CoOrdinate::getY);
     public static final CoOrdinate DUMMY = new CoOrdinate(-1, -1);
     private final int x, y;
 
@@ -77,31 +81,15 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof CoOrdinate))
             return false;
         CoOrdinate other = (CoOrdinate) obj;
-        if (x != other.x)
-            return false;
-        return y == other.y;
+        return x == other.x && y == other.y;
     }
 
     @Override
     public int compareTo(CoOrdinate o) {
-        if (this.x < o.x) {
-            return -1;
-        } else if (this.x == o.x) {
-            if (this.y < o.y) {
-                return -1;
-            } else if (this.y == o.y) {
-                return 0;
-            } else {
-                return 1;
-            }
-        } else {
-            return 1;
-        }
+        return XY_COMPARATOR.compare(this, o);
     }
 
 }

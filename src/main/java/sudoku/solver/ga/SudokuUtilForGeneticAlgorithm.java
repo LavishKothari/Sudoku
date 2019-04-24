@@ -51,7 +51,7 @@ final public class SudokuUtilForGeneticAlgorithm {
 
         int counter = 0;
         for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
-            if (list.get(i) == GridUtils.EMPTY_CELL) {
+            if (list.get(i) == GridUtils.EMPTY_CELL_VALUE) {
                 list.set(i, canBeFilled.get(counter++));
             }
         }

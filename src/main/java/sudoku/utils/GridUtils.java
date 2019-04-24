@@ -17,7 +17,7 @@ public final class GridUtils {
      * This value should not be changed. changing this value may lead to wrong
      * calculations or Exceptions in calculating fitness function.
      */
-    public static final int EMPTY_CELL = 0;
+    public static final int EMPTY_CELL_VALUE = 0;
 
     /*
      * We don't want to instantiate this class
@@ -31,18 +31,18 @@ public final class GridUtils {
     }
 
     public static List<Integer> getListOfRow(List<List<Integer>> grid, int rowNumber) {
-        List<Integer> result = new ArrayList<>(grid.size());
+        List<Integer> resultList = new ArrayList<>(grid.size());
         for (int i = 0; i < grid.get(rowNumber).size(); i++) {
-            if (grid.get(rowNumber).get(i) != GridUtils.EMPTY_CELL)
-                result.add(grid.get(rowNumber).get(i));
+            if (grid.get(rowNumber).get(i) != GridUtils.EMPTY_CELL_VALUE)
+                resultList.add(grid.get(rowNumber).get(i));
         }
-        return result;
+        return resultList;
     }
 
     public static List<Integer> getListOfColumn(List<List<Integer>> grid, int columnNumber) {
         List<Integer> resultList = new ArrayList<>(grid.size());
         for (int i = 0; i < grid.size(); i++) {
-            if (grid.get(i).get(columnNumber) != GridUtils.EMPTY_CELL)
+            if (grid.get(i).get(columnNumber) != GridUtils.EMPTY_CELL_VALUE)
                 resultList.add(grid.get(i).get(columnNumber));
         }
         return resultList;
@@ -65,7 +65,7 @@ public final class GridUtils {
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
             for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
-                if (includeEmptyCell || grid.get(i).get(j) != GridUtils.EMPTY_CELL)
+                if (includeEmptyCell || grid.get(i).get(j) != GridUtils.EMPTY_CELL_VALUE)
                     resultList.add(grid.get(i).get(j));
             }
         }
@@ -77,7 +77,7 @@ public final class GridUtils {
      * the list (possibly in shuffled order) and there are no repeated elements in
      * the list
      * <p>
-     * If any element is missing i.e.. is Sudoku.EMPTY_CELL then this method return
+     * If any element is missing i.e.. is Sudoku.EMPTY_CELL_VALUE then this method return
      * false
      *
      * @param maxValue
@@ -103,7 +103,7 @@ public final class GridUtils {
     /**
      * This method checks if there are no repeated elements present in the list
      * <p>
-     * If any element is missing i.e.. is Sudoku.EMPTY_CELL then that element is
+     * If any element is missing i.e.. is Sudoku.EMPTY_CELL_VALUE then that element is
      * ignored and has no effect on the return value of this method
      *
      * @param maxValue TODO
@@ -215,7 +215,7 @@ public final class GridUtils {
         StringBuilder sb = new StringBuilder();
         for (final List<Integer> currentList : grid) {
             for (final Integer currentCellValue : currentList) {
-                if (currentCellValue == GridUtils.EMPTY_CELL)
+                if (currentCellValue == GridUtils.EMPTY_CELL_VALUE)
                     sb.append('.');
                 else
                     sb.append(currentCellValue);
