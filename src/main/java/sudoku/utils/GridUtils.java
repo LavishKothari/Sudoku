@@ -39,6 +39,15 @@ public final class GridUtils {
         return resultList;
     }
 
+    public static SingleIntBitSet getListOfRowEff(List<List<Integer>> grid, int rowNumber) {
+        SingleIntBitSet result = new SingleIntBitSet(grid.size() + 1);
+        for (int i = 0; i < grid.get(rowNumber).size(); i++) {
+            if (grid.get(rowNumber).get(i) != GridUtils.EMPTY_CELL_VALUE)
+                result.set(grid.get(rowNumber).get(i));
+        }
+        return result;
+    }
+
     public static List<Integer> getListOfColumn(List<List<Integer>> grid, int columnNumber) {
         List<Integer> resultList = new ArrayList<>(grid.size());
         for (int i = 0; i < grid.size(); i++) {
@@ -48,8 +57,21 @@ public final class GridUtils {
         return resultList;
     }
 
+    public static SingleIntBitSet getListOfColumnEff(List<List<Integer>> grid, int columnNumber) {
+        SingleIntBitSet result = new SingleIntBitSet(grid.size() + 1);
+        for (int i = 0; i < grid.size(); i++) {
+            if (grid.get(i).get(columnNumber) != GridUtils.EMPTY_CELL_VALUE)
+                result.set(grid.get(i).get(columnNumber));
+        }
+        return result;
+    }
+
     public static List<Integer> getListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber) {
         return getGenericListOfInnerGrid(grid, innerGridNumber, false);
+    }
+
+    public static SingleIntBitSet getListOfInnerGridEff(List<List<Integer>> grid, int innerGridNumber) {
+        return getGenericListOfInnerGridEff(grid, innerGridNumber, false);
     }
 
     public static List<Integer> getGenericListOfInnerGrid(List<List<Integer>> grid, int innerGridNumber,
@@ -67,6 +89,26 @@ public final class GridUtils {
             for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
                 if (includeEmptyCell || grid.get(i).get(j) != GridUtils.EMPTY_CELL_VALUE)
                     resultList.add(grid.get(i).get(j));
+            }
+        }
+        return resultList;
+    }
+
+    public static SingleIntBitSet getGenericListOfInnerGridEff(List<List<Integer>> grid, int innerGridNumber,
+                                                               boolean includeEmptyCell) {
+        int dimensionOfGrid = grid.size();
+        int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
+
+        int Y = innerGridNumber % dimensionOfInnerGrid;
+        int X = innerGridNumber / dimensionOfInnerGrid;
+        int startXIndex = X * dimensionOfInnerGrid;
+        int startYIndex = Y * dimensionOfInnerGrid;
+
+        SingleIntBitSet resultList = new SingleIntBitSet(dimensionOfGrid + 1);
+        for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
+            for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
+                if (includeEmptyCell || grid.get(i).get(j) != GridUtils.EMPTY_CELL_VALUE)
+                    resultList.set(grid.get(i).get(j));
             }
         }
         return resultList;

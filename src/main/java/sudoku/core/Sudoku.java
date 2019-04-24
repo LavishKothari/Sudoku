@@ -4,14 +4,15 @@ import org.apache.log4j.Logger;
 import sudoku.utils.CoOrdinate;
 import sudoku.utils.GridUtils;
 import sudoku.utils.NumberUtils;
+import sudoku.utils.SingleIntBitSet;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 public class Sudoku {
@@ -322,20 +323,22 @@ public class Sudoku {
     public List<Integer> getPossibleValues(int row, int col) {
         if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return Collections.EMPTY_LIST;
-        List<Integer> rowList = GridUtils.getListOfRow(grid, row);
-        List<Integer> colList = GridUtils.getListOfColumn(grid, col);
+        SingleIntBitSet rowList = GridUtils.getListOfRowEff(grid, row);
+        SingleIntBitSet colList = GridUtils.getListOfColumnEff(grid, col);
 
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
-        List<Integer> innerGridList = GridUtils.getListOfInnerGrid(grid, innerGridNumber);
+        SingleIntBitSet innerGridList = GridUtils.getListOfInnerGridEff(grid, innerGridNumber);
 
-        BitSet elements = new BitSet();
-        for (int e : rowList) elements.set(e);
-        for (int e : colList) elements.set(e);
-        for (int e : innerGridList) elements.set(e);
+        SingleIntBitSet elements = new SingleIntBitSet(grid.size() + 1);
+        IntConsumer intConsumer = e -> elements.set(e);
+        SingleIntBitSet.setBitsConsumer(intConsumer, rowList, colList, innerGridList);
+//        rowList.setBitsConsumer(intConsumer);
+//        colList.setBitsConsumer(intConsumer);
+//        innerGridList.setBitsConsumer(intConsumer);
 
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
-            if (!elements.get(i + 1))
+            if (!elements.isSet(i + 1))
                 resultList.add(i + 1);
         }
         return resultList;
