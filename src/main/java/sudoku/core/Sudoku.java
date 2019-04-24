@@ -8,7 +8,10 @@ import sudoku.utils.NumberUtils;
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Sudoku {
@@ -23,14 +26,12 @@ public class Sudoku {
     private List<List<Integer>> cachedSolvedGrid;
 
     public Sudoku(List<List<Integer>> grid) {
-        super();
         this.grid = grid;
         dimensionOfGrid = grid.size();
         dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
     }
 
     public Sudoku(String s) {
-        super();
         this.grid = GridUtils.getGridFromStringFormat(s);
         dimensionOfGrid = this.grid.size();
         dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
@@ -93,15 +94,19 @@ public class Sudoku {
         }
         List<List<Integer>> grid = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
-            grid.add(new ArrayList<Integer>(n));
+            grid.add(new ArrayList<>(n));
             for (int j = 0; j < n; j++) {
                 grid.get(i).add(GridUtils.EMPTY_CELL_VALUE);
             }
         }
         Sudoku sudoku = new Sudoku(grid);
         while (!sudoku.isSolved()) {
-            new CustomSudokuSolver(sudoku).alwaysCalculatingCellWithLeastPossibility(true).randomize(true)
-                    .selectInitialOptimalCellOrderingList().backtrackingTimeOut(1000).solve();
+            new CustomSudokuSolver(sudoku)
+                    .alwaysCalculatingCellWithLeastPossibility(true)
+                    .randomize(true)
+                    //.selectInitialOptimalCellOrderingList()
+                    .backtrackingTimeOut(1000)
+                    .solve();
         }
         return sudoku;
     }
@@ -451,8 +456,10 @@ public class Sudoku {
             possibleIndices.add(new ArrayList<>());
 
         for (int j = 0; j < this.getDimensionOfGrid(); j++) {
-            for (final Integer currentValue : getPossibleValues(row, j)) {
-                possibleIndices.get(currentValue - 1).add(new CoOrdinate(row, j));
+            List<Integer> currentList = getPossibleValues(row, j);
+            CoOrdinate coOrdinate = new CoOrdinate(row, j);
+            for (Integer currentValue : currentList) {
+                possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
         }
         return possibleIndices;
@@ -464,8 +471,10 @@ public class Sudoku {
             possibleIndices.add(new ArrayList<>(this.getDimensionOfGrid()));
 
         for (int i = 0; i < this.getDimensionOfGrid(); i++) {
-            for (final Integer currentValue : getPossibleValues(i, col)) {
-                possibleIndices.get(currentValue - 1).add(new CoOrdinate(i, col));
+            List<Integer> currentList = getPossibleValues(i, col);
+            CoOrdinate coOrdinate = new CoOrdinate(i, col);
+            for (int currentValue : currentList) {
+                possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
         }
         return possibleIndices;

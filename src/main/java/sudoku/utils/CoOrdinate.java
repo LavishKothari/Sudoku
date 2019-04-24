@@ -12,7 +12,6 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     private final int x, y;
 
     public CoOrdinate(int x, int y) {
-        super();
         this.x = x;
         this.y = y;
     }

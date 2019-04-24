@@ -94,7 +94,7 @@ public class CustomSudokuSolver {
         List<List<Integer>> buckets = new ArrayList<>(10);
 
         for (int i = 0; i <= 9; i++) {
-            buckets.add(new ArrayList<Integer>());
+            buckets.add(new ArrayList<>());
         }
 
         for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
@@ -142,8 +142,7 @@ public class CustomSudokuSolver {
             logger.info("finished solving. The solved sudoku is:\n" + tempSudoku);
             logger.info("Exceution Time is: " + (endTimer - startTimer) + " ms");
             logger.info("\n================================ Solver Report Ends ================================");
-        }
-        if (solved) {
+
             for (int i = 0; i < sudoku.getDimensionOfGrid(); i++) {
                 for (int j = 0; j < sudoku.getDimensionOfGrid(); j++) {
                     int value = tempSudoku.getCellValue(i, j);
