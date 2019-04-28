@@ -1,15 +1,12 @@
 package sudoku.core;
 
 import org.apache.log4j.Logger;
-import sudoku.utils.CoOrdinate;
-import sudoku.utils.GridUtils;
-import sudoku.utils.NumberUtils;
+import sudoku.utils.*;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -313,6 +310,8 @@ public class Sudoku {
      * <p>
      * If the cell is already filled (not empty) then this method returns list with
      * one single element that is already present in that cell.
+     * <p>
+     * This method is a hot method. So try to optimize it as much as possible.
      *
      * @param row
      * @param col
@@ -322,23 +321,34 @@ public class Sudoku {
     public List<Integer> getPossibleValues(int row, int col) {
         if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return Collections.EMPTY_LIST;
-        List<Integer> rowList = GridUtils.getListOfRow(grid, row);
-        List<Integer> colList = GridUtils.getListOfColumn(grid, col);
+
+        List<CoOrdinate> rowC = CoOrdinateUtils.getRowCoOrdinates(dimensionOfGrid, row);
+        List<CoOrdinate> colC = CoOrdinateUtils.getColCoOrdinates(dimensionOfGrid, col);
 
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
-        List<Integer> innerGridList = GridUtils.getListOfInnerGrid(grid, innerGridNumber);
+        List<CoOrdinate> gridC = CoOrdinateUtils.getInnerGridCoOrdinates(dimensionOfGrid, innerGridNumber);
 
-        BitSet elements = new BitSet();
-        for (int e : rowList) elements.set(e);
-        for (int e : colList) elements.set(e);
-        for (int e : innerGridList) elements.set(e);
+        SingleIntBitSet elements = new SingleIntBitSet(grid.size() + 1);
+        for (int i = 0; i < dimensionOfGrid; i++) {
+            getIthAndSetXY(i, elements, rowC);
+            getIthAndSetXY(i, elements, colC);
+            getIthAndSetXY(i, elements, gridC);
+        }
 
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
-            if (!elements.get(i + 1))
+            if (!elements.isSet(i + 1))
                 resultList.add(i + 1);
         }
         return resultList;
+    }
+
+    private void getIthAndSetXY(int i, SingleIntBitSet elements, List<CoOrdinate> list) {
+        int x = list.get(i).getX();
+        int y = list.get(i).getY();
+        if (grid.get(x).get(y) != GridUtils.EMPTY_CELL_VALUE) {
+            elements.set(grid.get(x).get(y));
+        }
     }
 
     /**
@@ -457,7 +467,7 @@ public class Sudoku {
 
         for (int j = 0; j < this.getDimensionOfGrid(); j++) {
             List<Integer> currentList = getPossibleValues(row, j);
-            CoOrdinate coOrdinate = new CoOrdinate(row, j);
+            CoOrdinate coOrdinate = CoOrdinate.getCoOrdinate(row, j);
             for (Integer currentValue : currentList) {
                 possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
@@ -472,7 +482,7 @@ public class Sudoku {
 
         for (int i = 0; i < this.getDimensionOfGrid(); i++) {
             List<Integer> currentList = getPossibleValues(i, col);
-            CoOrdinate coOrdinate = new CoOrdinate(i, col);
+            CoOrdinate coOrdinate = CoOrdinate.getCoOrdinate(i, col);
             for (int currentValue : currentList) {
                 possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
@@ -493,7 +503,7 @@ public class Sudoku {
         for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
             for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
                 for (final Integer currentValue : getPossibleValues(i, j)) {
-                    possibleIndices.get(currentValue - 1).add(new CoOrdinate(i, j));
+                    possibleIndices.get(currentValue - 1).add(CoOrdinate.getCoOrdinate(i, j));
                 }
             }
         }
@@ -663,7 +673,7 @@ public class Sudoku {
     }
 
     public List<Integer> getInnerGridValues(int innerGridNumber, boolean includeEmptyCells) {
-        return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, true);
+        return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, includeEmptyCells);
     }
 
     public List<Integer> getColumnValues(int columnNumber) {
