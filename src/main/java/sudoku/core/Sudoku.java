@@ -1,10 +1,7 @@
 package sudoku.core;
 
 import org.apache.log4j.Logger;
-import sudoku.utils.CoOrdinate;
-import sudoku.utils.GridUtils;
-import sudoku.utils.NumberUtils;
-import sudoku.utils.SingleIntBitSet;
+import sudoku.utils.*;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
@@ -12,7 +9,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 public class Sudoku {
@@ -325,15 +321,19 @@ public class Sudoku {
     public List<Integer> getPossibleValues(int row, int col) {
         if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return Collections.EMPTY_LIST;
-        SingleIntBitSet rowList = GridUtils.getListOfRowEff(grid, row);
-        SingleIntBitSet colList = GridUtils.getListOfColumnEff(grid, col);
+
+        List<CoOrdinate> rowC = CoOrdinateUtils.getRowCoOrdinates(dimensionOfGrid, row);
+        List<CoOrdinate> colC = CoOrdinateUtils.getColCoOrdinates(dimensionOfGrid, col);
 
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
-        SingleIntBitSet innerGridList = GridUtils.getListOfInnerGridEff(grid, innerGridNumber);
+        List<CoOrdinate> gridC = CoOrdinateUtils.getInnerGridCoOrdinates(dimensionOfGrid, innerGridNumber);
 
         SingleIntBitSet elements = new SingleIntBitSet(grid.size() + 1);
-        IntConsumer intConsumer = e -> elements.set(e);
-        SingleIntBitSet.setBitsConsumer(intConsumer, rowList, colList, innerGridList);
+        for (int i = 0; i < dimensionOfGrid; i++) {
+            getIthAndSetXY(i, elements, rowC);
+            getIthAndSetXY(i, elements, colC);
+            getIthAndSetXY(i, elements, gridC);
+        }
 
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
@@ -341,6 +341,14 @@ public class Sudoku {
                 resultList.add(i + 1);
         }
         return resultList;
+    }
+
+    private void getIthAndSetXY(int i, SingleIntBitSet elements, List<CoOrdinate> list) {
+        int x = list.get(i).getX();
+        int y = list.get(i).getY();
+        if (grid.get(x).get(y) != GridUtils.EMPTY_CELL_VALUE) {
+            elements.set(grid.get(x).get(y));
+        }
     }
 
     /**
@@ -665,7 +673,7 @@ public class Sudoku {
     }
 
     public List<Integer> getInnerGridValues(int innerGridNumber, boolean includeEmptyCells) {
-        return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, true);
+        return GridUtils.getGenericListOfInnerGrid(grid, innerGridNumber, includeEmptyCells);
     }
 
     public List<Integer> getColumnValues(int columnNumber) {

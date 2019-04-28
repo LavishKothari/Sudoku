@@ -38,7 +38,7 @@ public class PerfTests {
         List<List<Integer>> sudokuGrid = GridUtils
                 .getGridsFromFile("hardest_puzzles.txt")
                 .get(0);
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 14000; i++) {
             System.out.println("-----" + i);
             List<List<Integer>> newGrid = new ArrayList<>(sudokuGrid.size());
             for (int x = 0; x < sudokuGrid.size(); x++) {

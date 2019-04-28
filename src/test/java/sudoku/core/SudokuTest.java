@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import sudoku.utils.GridUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -14,6 +15,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class SudokuTest {
 
@@ -129,25 +133,57 @@ public class SudokuTest {
     }
 
     @Test
-    public void appendSudokuTest() throws IOException {
-        String puzzleFileName = "sudoku_puzzles_generated.txt";
-        String solutionFileName = "sudoku_solution_generated.txt";
-
-        // generating puzzles and solutions for 20 seconds
-        int appendedSudokus = Sudoku
-                .appendRandomGeneratedSudoku(9,
-                        puzzleFileName,
-                        solutionFileName,
-                        20000);
-        System.out.println("# of generated sudokus: "+appendedSudokus);
-        List<Sudoku> unsolvedSudokuList = Sudoku.getSudokusFromFile(puzzleFileName);
-        List<Sudoku> solvedSudokuList = Sudoku.getSudokusFromFile(solutionFileName);
-
-        for (int i = 0; i < unsolvedSudokuList.size(); i++) {
-            Assert.assertTrue(solvedSudokuList.get(i).hasUniqueSolution());
-            Assert.assertTrue(solvedSudokuList.get(i).isSolutionOf(unsolvedSudokuList.get(i)));
-            Assert.assertTrue(solvedSudokuList.get(i).isSolved());
+    public void appendSudokuTest() throws Exception {
+        String puzzleFileName = "sudoku_puzzles_generated";
+        String solutionFileName = "sudoku_solution_generated";
+        int n = 10;
+        long timeOut = 200000; // in milli-seconds
+        ExecutorService executorService = Executors.newFixedThreadPool(n);
+        for (int i = 0; i < n; i++) {
+            String puzzles = puzzleFileName + i + ".txt";
+            String solutions = solutionFileName + i + ".txt";
+            createFileIfDontExists(puzzles);
+            createFileIfDontExists(solutions);
+            executorService.execute(getRunnable(puzzles,
+                    solutions,
+                    timeOut));
         }
+        executorService.shutdown();
+        executorService.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+    }
+
+    private void createFileIfDontExists(String fileName) throws IOException {
+        String f = SudokuTest.class
+                .getClassLoader()
+                .getResource(".")
+                .getFile() + fileName;
+        File file = new File(f);
+        if (!file.exists())
+            file.createNewFile();
+    }
+
+    private Runnable getRunnable(final String puzzleFileName, final String solutionFileName,
+                                 long timeOut) {
+        return () -> {
+            try {
+                int appendedSudokus = Sudoku
+                        .appendRandomGeneratedSudoku(9,
+                                puzzleFileName,
+                                solutionFileName,
+                                timeOut);
+                System.out.println("# of generated sudokus: " + appendedSudokus);
+                List<Sudoku> unsolvedSudokuList = Sudoku.getSudokusFromFile(puzzleFileName);
+                List<Sudoku> solvedSudokuList = Sudoku.getSudokusFromFile(solutionFileName);
+
+                for (int i = 0; i < unsolvedSudokuList.size(); i++) {
+                    Assert.assertTrue(solvedSudokuList.get(i).hasUniqueSolution());
+                    Assert.assertTrue(solvedSudokuList.get(i).isSolutionOf(unsolvedSudokuList.get(i)));
+                    Assert.assertTrue(solvedSudokuList.get(i).isSolved());
+                }
+            } catch (IOException ioe) {
+                System.out.println("IOException raised");
+            }
+        };
     }
 
     @Test
