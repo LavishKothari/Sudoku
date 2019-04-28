@@ -314,6 +314,8 @@ public class Sudoku {
      * <p>
      * If the cell is already filled (not empty) then this method returns list with
      * one single element that is already present in that cell.
+     * <p>
+     * This method is a hot method. So try to optimize it as much as possible.
      *
      * @param row
      * @param col
@@ -332,9 +334,6 @@ public class Sudoku {
         SingleIntBitSet elements = new SingleIntBitSet(grid.size() + 1);
         IntConsumer intConsumer = e -> elements.set(e);
         SingleIntBitSet.setBitsConsumer(intConsumer, rowList, colList, innerGridList);
-//        rowList.setBitsConsumer(intConsumer);
-//        colList.setBitsConsumer(intConsumer);
-//        innerGridList.setBitsConsumer(intConsumer);
 
         List<Integer> resultList = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
@@ -460,7 +459,7 @@ public class Sudoku {
 
         for (int j = 0; j < this.getDimensionOfGrid(); j++) {
             List<Integer> currentList = getPossibleValues(row, j);
-            CoOrdinate coOrdinate = new CoOrdinate(row, j);
+            CoOrdinate coOrdinate = CoOrdinate.getCoOrdinate(row, j);
             for (Integer currentValue : currentList) {
                 possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
@@ -475,7 +474,7 @@ public class Sudoku {
 
         for (int i = 0; i < this.getDimensionOfGrid(); i++) {
             List<Integer> currentList = getPossibleValues(i, col);
-            CoOrdinate coOrdinate = new CoOrdinate(i, col);
+            CoOrdinate coOrdinate = CoOrdinate.getCoOrdinate(i, col);
             for (int currentValue : currentList) {
                 possibleIndices.get(currentValue - 1).add(coOrdinate);
             }
@@ -496,7 +495,7 @@ public class Sudoku {
         for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
             for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
                 for (final Integer currentValue : getPossibleValues(i, j)) {
-                    possibleIndices.get(currentValue - 1).add(new CoOrdinate(i, j));
+                    possibleIndices.get(currentValue - 1).add(CoOrdinate.getCoOrdinate(i, j));
                 }
             }
         }

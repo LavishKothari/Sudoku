@@ -8,7 +8,18 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     public static final Comparator<CoOrdinate> XY_COMPARATOR =
             Comparator.comparing(CoOrdinate::getX)
                     .thenComparing(CoOrdinate::getY);
-    public static final CoOrdinate DUMMY = new CoOrdinate(-1, -1);
+    private static final CoOrdinate[][] CoOrdinateCache;
+    private static final int CACHE_SIZE = 25;
+
+    static {
+        CoOrdinateCache = new CoOrdinate[CACHE_SIZE + 1][CACHE_SIZE + 1];
+        for (int i = 0; i <= CACHE_SIZE; i++) {
+            for (int j = 0; j <= CACHE_SIZE; j++) {
+                CoOrdinateCache[i][j] = new CoOrdinate(i, j);
+            }
+        }
+    }
+
     private final int x, y;
 
     public CoOrdinate(int x, int y) {
@@ -19,7 +30,7 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     public static List<CoOrdinate> getCoOrdinateListOfRow(int row, int dimensionOfGrid) {
         List<CoOrdinate> result = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
-            result.add(new CoOrdinate(row, i));
+            result.add(CoOrdinate.getCoOrdinate(row, i));
         }
         return result;
     }
@@ -27,7 +38,7 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
     public static List<CoOrdinate> getCoOrdinateListOfColumn(int col, int dimensionOfGrid) {
         List<CoOrdinate> result = new ArrayList<>(dimensionOfGrid);
         for (int i = 0; i < dimensionOfGrid; i++) {
-            result.add(new CoOrdinate(i, col));
+            result.add(CoOrdinate.getCoOrdinate(i, col));
         }
         return result;
     }
@@ -45,13 +56,27 @@ public class CoOrdinate implements Comparable<CoOrdinate> {
 
             for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
                 for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
-                    result.add(new CoOrdinate(i, j));
+                    result.add(CoOrdinate.getCoOrdinate(i, j));
                 }
             }
             return result;
         } else {
             throw new RuntimeException("The dimension of grid should be a perfect square!");
         }
+    }
+
+    /**
+     * static factory method that returns the cached instance
+     * if found, otherwise creates a new object and returns it.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public static CoOrdinate getCoOrdinate(int x, int y) {
+        if (x <= CACHE_SIZE && y <= CACHE_SIZE)
+            return CoOrdinateCache[x][y];
+        return new CoOrdinate(x, y);
     }
 
     @Override
