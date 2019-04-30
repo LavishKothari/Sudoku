@@ -18,7 +18,7 @@ public class CoOrdinateUtilsTest {
                 {get(8, 0), get(8, 1), get(8, 2), get(8, 3), get(8, 4), get(8, 5), get(8, 6), get(8, 7), get(8, 8)}};
         for (int i = 0; i < 9; i++) {
             int j = 0;
-            for (CoOrdinate c : CoOrdinateUtils.getRowCoOrdinates(9, i)) {
+            for (CoOrdinate c : CoOrdinate.getCoOrdinateListOfRow(i, 9)) {
                 Assert.assertEquals(coOrdinates[i][j++], c);
             }
         }
@@ -38,7 +38,7 @@ public class CoOrdinateUtilsTest {
                 {get(0, 8), get(1, 8), get(2, 8), get(3, 8), get(4, 8), get(5, 8), get(6, 8), get(7, 8), get(8, 8)}};
         for (int i = 0; i < 9; i++) {
             int j = 0;
-            for (CoOrdinate c : CoOrdinateUtils.getColCoOrdinates(9, i)) {
+            for (CoOrdinate c : CoOrdinate.getCoOrdinateListOfColumn(i, 9)) {
                 Assert.assertEquals(coOrdinates[i][j++], c);
             }
         }
@@ -59,7 +59,7 @@ public class CoOrdinateUtilsTest {
                 {get(6, 6), get(6, 7), get(6, 8), get(7, 6), get(7, 7), get(7, 8), get(8, 6), get(8, 7), get(8, 8)}};
         for (int i = 0; i < 9; i++) {
             int j = 0;
-            for (CoOrdinate c : CoOrdinateUtils.getInnerGridCoOrdinates(9, i)) {
+            for (CoOrdinate c : CoOrdinate.getCoOrdinateListOfInnerGrid(i, 9)) {
                 Assert.assertEquals(coOrdinates[i][j++], c);
             }
         }

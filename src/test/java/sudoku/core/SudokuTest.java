@@ -137,7 +137,7 @@ public class SudokuTest {
         String puzzleFileName = "sudoku_puzzles_generated";
         String solutionFileName = "sudoku_solution_generated";
         int n = 10;
-        long timeOut = 200000; // in milli-seconds
+        long timeOut = 20000; // in milli-seconds
         ExecutorService executorService = Executors.newFixedThreadPool(n);
         for (int i = 0; i < n; i++) {
             String puzzles = puzzleFileName + i + ".txt";
