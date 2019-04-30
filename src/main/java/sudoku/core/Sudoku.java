@@ -1,7 +1,10 @@
 package sudoku.core;
 
 import org.apache.log4j.Logger;
-import sudoku.utils.*;
+import sudoku.utils.CoOrdinate;
+import sudoku.utils.GridUtils;
+import sudoku.utils.NumberUtils;
+import sudoku.utils.SingleIntBitSet;
 
 import java.io.IOException;
 import java.nio.file.OpenOption;
@@ -322,11 +325,11 @@ public class Sudoku {
         if (this.getCellValue(row, col) != GridUtils.EMPTY_CELL_VALUE)
             return Collections.EMPTY_LIST;
 
-        List<CoOrdinate> rowC = CoOrdinateUtils.getRowCoOrdinates(dimensionOfGrid, row);
-        List<CoOrdinate> colC = CoOrdinateUtils.getColCoOrdinates(dimensionOfGrid, col);
+        List<CoOrdinate> rowC = CoOrdinate.getCoOrdinateListOfRow(row, dimensionOfGrid);
+        List<CoOrdinate> colC = CoOrdinate.getCoOrdinateListOfColumn(col, dimensionOfGrid);
 
         int innerGridNumber = GridUtils.getInnerGridNumber(dimensionOfGrid, row, col);
-        List<CoOrdinate> gridC = CoOrdinateUtils.getInnerGridCoOrdinates(dimensionOfGrid, innerGridNumber);
+        List<CoOrdinate> gridC = CoOrdinate.getCoOrdinateListOfInnerGrid(innerGridNumber, dimensionOfGrid);
 
         SingleIntBitSet elements = new SingleIntBitSet(grid.size() + 1);
         for (int i = 0; i < dimensionOfGrid; i++) {

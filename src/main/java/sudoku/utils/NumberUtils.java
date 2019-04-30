@@ -49,6 +49,7 @@ public final class NumberUtils {
         if (n <= PERFECT_SQUARE_CACHE_SIZE * PERFECT_SQUARE_CACHE_SIZE &&
                 perfectSquare[(int) n] != -1)
             return perfectSquare[(int) n];
+
         long start = 1, end = n;
         long mid = (start + end) / 2;
         while (start <= end) {
