@@ -7,22 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SudokuChromosome implements WeightedEntity {
-    public static final Comparator<SudokuChromosome> SELECTION_PROBABILITY_COMPARATOR = new Comparator<SudokuChromosome>() {
-        @Override
-        public int compare(SudokuChromosome s1, SudokuChromosome s2) {
-            Double d1 = s1.probabilityOfSelection;
-            Double d2 = s2.probabilityOfSelection;
-            return d1.compareTo(d2);
-        }
-    };
-    public static final Comparator<SudokuChromosome> DISTANCE_COMPARATOR = new Comparator<SudokuChromosome>() {
-        @Override
-        public int compare(SudokuChromosome s1, SudokuChromosome s2) {
-            Double d1 = s1.inverseDistance;
-            Double d2 = s2.inverseDistance;
-            return d1.compareTo(d2);
-        }
-    };
+    public static final Comparator<SudokuChromosome> SELECTION_PROBABILITY_COMPARATOR =
+            Comparator.comparingDouble(SudokuChromosome::getProbabilityOfSelection);
+    public static final Comparator<SudokuChromosome> DISTANCE_COMPARATOR =
+            Comparator.comparingDouble(SudokuChromosome::getInverseDistance);
     private final Sudoku sudoku;
     private final double inverseDistance;
     private double probabilityOfSelection;
@@ -51,8 +39,10 @@ public class SudokuChromosome implements WeightedEntity {
     }
 
     public static void refreshProbabilityOfSelection(List<SudokuChromosome> sudokuChromosomeList) {
-        double totalInverseDistance = sudokuChromosomeList.stream().mapToDouble(x -> x.inverseDistance).reduce(0.0,
-                (x, y) -> x + y);
+        double totalInverseDistance = sudokuChromosomeList
+                .stream()
+                .mapToDouble(x -> x.inverseDistance)
+                .reduce(0.0, (x, y) -> x + y);
         for (int i = 0; i < sudokuChromosomeList.size(); i++) {
             sudokuChromosomeList.get(i).probabilityOfSelection = sudokuChromosomeList.get(i).inverseDistance
                     / totalInverseDistance;
@@ -61,12 +51,18 @@ public class SudokuChromosome implements WeightedEntity {
 
     public static List<Sudoku> getSudokuList(List<SudokuChromosome> sudokuChromosomeList) {
         List<Sudoku> sudokuList = new ArrayList<>(sudokuChromosomeList.size());
-        sudokuChromosomeList.stream().forEach(e -> sudokuList.add(e.sudoku));
+        sudokuChromosomeList
+                .stream()
+                .forEach(e -> sudokuList.add(e.sudoku));
         return sudokuList;
     }
 
     public double getProbabilityOfSelection() {
         return probabilityOfSelection;
+    }
+
+    private double getInverseDistance() {
+        return inverseDistance;
     }
 
     @Override

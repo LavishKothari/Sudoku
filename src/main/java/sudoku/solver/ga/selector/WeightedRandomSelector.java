@@ -3,8 +3,9 @@ package sudoku.solver.ga.selector;
 import sudoku.solver.ga.WeightedEntity;
 
 import java.util.List;
+import java.util.function.Supplier;
 
-public class WeightedRandomSelector<T extends WeightedEntity> implements Selector<T> {
+public class WeightedRandomSelector<T extends WeightedEntity> implements Supplier<T> {
 
     final List<T> elements;
 
@@ -13,8 +14,10 @@ public class WeightedRandomSelector<T extends WeightedEntity> implements Selecto
     }
 
     @Override
-    public T selectNext() {
-        double weightSum = elements.stream().mapToDouble(x -> x.getWeight()).reduce(0.0, (x, y) -> x + y);
+    public T get() {
+        double weightSum = elements.stream()
+                .mapToDouble(x -> x.getWeight())
+                .reduce(0.0, (x, y) -> x + y);
         /*
          * for a good distribution we can shuffle. but running it shows that shuffle
          * don't have much improvements.
@@ -26,7 +29,6 @@ public class WeightedRandomSelector<T extends WeightedEntity> implements Selecto
             if (randomSum < 0.0)
                 return ele;
         }
-        // should never happen
-        return null;
+        throw new IllegalStateException("this should never happen.");
     }
 }

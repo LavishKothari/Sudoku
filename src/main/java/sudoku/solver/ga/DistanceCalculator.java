@@ -75,7 +75,9 @@ final public class DistanceCalculator {
             throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
         }
         int requiredSumOfEachHouse = (n * (n + 1)) / 2;
-        int obtainedSum = list.stream().mapToInt(x -> x.intValue()).sum();
+        int obtainedSum = list.stream()
+                .mapToInt(x -> x.intValue())
+                .sum();
         double sumCost = Math.sqrt((requiredSumOfEachHouse - obtainedSum) * (requiredSumOfEachHouse - obtainedSum));
         return Math.sqrt(sumCost);
     }
@@ -86,7 +88,9 @@ final public class DistanceCalculator {
             throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
         }
         long requiredProductOfEachHouse = NumberUtils.factorial(n);
-        long obtainedProduct = list.stream().filter(x -> x != GridUtils.EMPTY_CELL_VALUE).mapToLong(x -> x.longValue())
+        long obtainedProduct = list.stream()
+                .filter(x -> x != GridUtils.EMPTY_CELL_VALUE)
+                .mapToLong(x -> x.longValue())
                 .reduce(1, (x, y) -> x * y);
         double sumCost = Math
                 .sqrt((requiredProductOfEachHouse - obtainedProduct) * (requiredProductOfEachHouse - obtainedProduct));
@@ -98,7 +102,10 @@ final public class DistanceCalculator {
         if (n != list.size()) {
             throw new IllegalArgumentException("The size of House and dimension of Sudoku don't match");
         }
-        int count = (int) list.stream().filter(x -> x != GridUtils.EMPTY_CELL_VALUE).mapToInt(x -> x.intValue()).distinct()
+        int count = (int) list.stream()
+                .filter(x -> x != GridUtils.EMPTY_CELL_VALUE)
+                .mapToInt(x -> x.intValue())
+                .distinct()
                 .count();
         return Math.sqrt((n - count) * (n - count));
     }
@@ -106,7 +113,9 @@ final public class DistanceCalculator {
     private static double getDistanceOfWholeGridBySum(Sudoku sudoku, List<Integer> wholeGridList) {
         int n = sudoku.getDimensionOfGrid();
         int requiredWholeGridSum = ((n * (n + 1)) / 2) * n;
-        int obtainedSum = wholeGridList.stream().mapToInt(x -> x.intValue()).sum();
+        int obtainedSum = wholeGridList.stream()
+                .mapToInt(x -> x.intValue())
+                .sum();
         double sumCost = Math.sqrt((requiredWholeGridSum - obtainedSum) * (requiredWholeGridSum - obtainedSum));
         return Math.pow(sumCost, 1.0 / 3.0);
     }
@@ -117,7 +126,10 @@ final public class DistanceCalculator {
         // the following loop assumes that GridUtils.EMPTY_CELL_VALUE = 0
         for (int i = 0; i <= n; i++) {
             final int j = i;
-            int occurrence = (int) wholeGridList.stream().mapToInt(x -> x.intValue()).filter(x -> x == j).count();
+            int occurrence = (int) wholeGridList.stream()
+                    .mapToInt(x -> x.intValue())
+                    .filter(x -> x == j)
+                    .count();
             // there should be no occurrences of 0
             if (i == 0) {
                 cost += occurrence;
