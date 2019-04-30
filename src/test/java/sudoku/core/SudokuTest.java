@@ -113,7 +113,9 @@ public class SudokuTest {
         for (final List<List<Integer>> currentGrid : GridUtils.getGridsFromFile("easy_puzzles.txt")) {
             Sudoku currentSudoku = new Sudoku(currentGrid);
             Assert.assertTrue(currentSudoku.isValid());
-            new CustomSudokuSolver(currentSudoku).randomize(true).alwaysCalculatingCellWithLeastPossibility(true)
+            new CustomSudokuSolver(currentSudoku)
+                    .randomize(true)
+                    .alwaysCalculatingCellWithLeastPossibility(true)
                     .solve();
             currentSudoku.writeSudokuToFile(solutionFileName, StandardOpenOption.APPEND);
         }
@@ -127,7 +129,10 @@ public class SudokuTest {
         for (int i = 0; i < 10; i++) {
             Sudoku unsolved = Sudoku.generateRandomCompletelyFilledSudoku(9);
             Sudoku solved = new Sudoku(unsolved.getGrid());
-            new CustomSudokuSolver(solved).alwaysCalculatingCellWithLeastPossibility(true).randomize(true).solve();
+            new CustomSudokuSolver(solved)
+                    .alwaysCalculatingCellWithLeastPossibility(true)
+                    .randomize(true)
+                    .solve();
             Assert.assertTrue(solved.isSolutionOf(unsolved));
         }
     }
@@ -137,7 +142,7 @@ public class SudokuTest {
         String puzzleFileName = "sudoku_puzzles_generated";
         String solutionFileName = "sudoku_solution_generated";
         int n = 10;
-        long timeOut = 20000; // in milli-seconds
+        long timeOut = 2000; // in milli-seconds
         ExecutorService executorService = Executors.newFixedThreadPool(n);
         for (int i = 0; i < n; i++) {
             String puzzles = puzzleFileName + i + ".txt";

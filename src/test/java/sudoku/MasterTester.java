@@ -10,6 +10,7 @@ import sudoku.solver.ga.SudokuUtilForGeneticAlgorithmTest;
 import sudoku.utils.CoOrdinateUtilsTest;
 import sudoku.utils.GridUtilsTest;
 import sudoku.utils.NumberUtilsTest;
+import sudoku.utils.SingleIntBitSetTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({CustomSudokuSolverTest.class,
@@ -17,6 +18,7 @@ import sudoku.utils.NumberUtilsTest;
         NumberUtilsTest.class,
         GridUtilsTest.class,
         CoOrdinateUtilsTest.class,
+        SingleIntBitSetTest.class,
         SudokuChromosomeTest.class,
         SudokuUtilForGeneticAlgorithmTest.class,
         IntegrationTest.class})

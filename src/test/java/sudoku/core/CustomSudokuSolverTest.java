@@ -56,7 +56,9 @@ public class CustomSudokuSolverTest {
 
     @Test
     public void solveRandomizedTest() {
-        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).solve();
+        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku)
+                .randomize(true)
+                .solve();
         Assert.assertEquals(unsolvedSudoku.isSolved(), isSolved);
         Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
     }
@@ -68,14 +70,19 @@ public class CustomSudokuSolverTest {
             sequenceList.add(i);
         Collections.shuffle(sequenceList);
 
-        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).sequenceList(sequenceList).solve();
+        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku)
+                .randomize(true)
+                .sequenceList(sequenceList)
+                .solve();
         Assert.assertEquals(unsolvedSudoku.isSolved(), isSolved);
         Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
     }
 
     @Test
     public void optimalSolveTest() {
-        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).selectInitialOptimalCellOrderingList()
+        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku)
+                .randomize(true)
+                .selectInitialOptimalCellOrderingList()
                 .solve();
         Assert.assertEquals(unsolvedSudoku.isSolved(), isSolved);
         Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
@@ -83,16 +90,21 @@ public class CustomSudokuSolverTest {
 
     @Test
     public void alwaysCalculateCellWithLeastPossibilityTest() {
-        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku).randomize(true).selectInitialOptimalCellOrderingList()
-                .alwaysCalculatingCellWithLeastPossibility(true).solve();
+        boolean isSolved = new CustomSudokuSolver(unsolvedSudoku)
+                .randomize(true)
+                .selectInitialOptimalCellOrderingList()
+                .alwaysCalculatingCellWithLeastPossibility(true)
+                .solve();
         Assert.assertEquals(unsolvedSudoku.isSolved(), isSolved);
         Assert.assertEquals(solvedSudoku.getGrid(), unsolvedSudoku.getGrid());
     }
 
     @Test
     public void hardSudokuTest() {
-        boolean isSolved = new CustomSudokuSolver(unsolvedHardSudoku).randomize(true)
-                .selectInitialOptimalCellOrderingList().solve();
+        boolean isSolved = new CustomSudokuSolver(unsolvedHardSudoku)
+                .randomize(true)
+                .selectInitialOptimalCellOrderingList()
+                .solve();
         Assert.assertEquals(unsolvedHardSudoku.isSolved(), isSolved);
     }
 
