@@ -2,9 +2,9 @@ package sudoku.solver.ga;
 
 import sudoku.core.Sudoku;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SudokuChromosome implements WeightedEntity {
     public static final Comparator<SudokuChromosome> SELECTION_PROBABILITY_COMPARATOR =
@@ -26,10 +26,9 @@ public class SudokuChromosome implements WeightedEntity {
     }
 
     public static void addToSudokuChromosomeList(List<SudokuChromosome> sudokuChromosomeList, List<Sudoku> sudokuList) {
-        for (int i = 0; i < sudokuList.size(); i++) {
-            SudokuChromosome chromosome = new SudokuChromosome(sudokuList.get(i));
-            sudokuChromosomeList.add(chromosome);
-        }
+        sudokuList.stream()
+                .map(sudoku -> new SudokuChromosome(sudoku))
+                .forEach(sudokuChromosome -> sudokuChromosomeList.add(sudokuChromosome));
     }
 
     public static void addAndRefreshProbabilityOfSelection(List<SudokuChromosome> sudokuChromosomeList,
@@ -50,11 +49,14 @@ public class SudokuChromosome implements WeightedEntity {
     }
 
     public static List<Sudoku> getSudokuList(List<SudokuChromosome> sudokuChromosomeList) {
-        List<Sudoku> sudokuList = new ArrayList<>(sudokuChromosomeList.size());
-        sudokuChromosomeList
+        return sudokuChromosomeList
                 .stream()
-                .forEach(e -> sudokuList.add(e.sudoku));
-        return sudokuList;
+                .map(SudokuChromosome::getSudoku)
+                .collect(Collectors.toList());
+    }
+
+    public Sudoku getSudoku() {
+        return sudoku;
     }
 
     public double getProbabilityOfSelection() {

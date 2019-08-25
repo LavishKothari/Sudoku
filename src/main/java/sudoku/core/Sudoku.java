@@ -1,5 +1,6 @@
 package sudoku.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.log4j.Logger;
 import sudoku.utils.CoOrdinate;
 import sudoku.utils.GridUtils;
@@ -170,7 +171,7 @@ public class Sudoku {
         return counter;
     }
 
-    List<List<Integer>> getCachedSolvedGrid() {
+    public List<List<Integer>> getCachedSolvedGrid() {
         return cachedSolvedGrid;
     }
 
@@ -193,13 +194,11 @@ public class Sudoku {
     }
 
     /**
-     * This getter is package private as it can only be accessed by solvers in the
-     * package and is not available to end-client (to avoid mutations in the actual
-     * grid)
+     * avoid mutations in the actual grid
      *
      * @return
      */
-    List<List<Integer>> getGrid() {
+    public List<List<Integer>> getGrid() {
         return grid;
     }
 
@@ -208,7 +207,7 @@ public class Sudoku {
      *
      * @param someGrid
      */
-    void setGrid(List<List<Integer>> someGrid) {
+    public void setGrid(List<List<Integer>> someGrid) {
         this.grid = GridUtils.getClonedGrid(someGrid);
     }
 
@@ -268,6 +267,7 @@ public class Sudoku {
      * <p>
      * For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
      */
+    @JsonIgnore
     public int getCellWithLeastPossibility() {
         int counter = 0, minCounter = -1, minListSize = Integer.MAX_VALUE;
         for (int i = 0; i < dimensionOfGrid; i++) {
@@ -292,6 +292,7 @@ public class Sudoku {
      * <p>
      * For example, in a 9x9 sudoku grid the cells are indexed from 0 to 80
      */
+    @JsonIgnore
     public int getCellWithExactlyOnePossibility() {
         int counter = 0;
         for (int i = 0; i < dimensionOfGrid; i++) {
@@ -368,6 +369,7 @@ public class Sudoku {
         return solutions == 1;
     }
 
+    @JsonIgnore
     public Sudoku getClonedSudoku() {
         List<List<Integer>> tempGrid = GridUtils.getClonedGrid(grid);
         return new Sudoku(tempGrid);

@@ -9,12 +9,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SudokuUtilForGeneticAlgorithmTest {
+public class SudokuGeneticAlgorithmUtilsTest {
+
+    @Test
+    public void checkSolution() {
+        Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(9);
+        Assert.assertTrue(new GeneticSudokuSolver(s).solve());
+        System.out.println(s);
+    }
 
     @Test
     public void getRandomMayBeInvalidConformingSudokuTest() {
         Sudoku s = Sudoku.getPartiallyFilledSudokuPuzzle(9);
-        List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm.getRandomMayBeInvalidConformingSudokuList(100, s);
+        List<Sudoku> sudokuList = SudokuGeneticAlgorithmUtils.getRandomMayBeInvalidConformingSudokuList(100, s);
         for (int i = 0; i < sudokuList.size(); i++) {
             Assert.assertTrue(checkIfConforming(s, sudokuList.get(i)));
         }

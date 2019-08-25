@@ -24,13 +24,13 @@ public class GeneticAlgorithmSelectionUtils {
 
     public static List<Sudoku> getSelectedFitSudokus(List<Sudoku> inputSudokus, double selectionRate) {
         int solutionsInEachGeneration = inputSudokus.size();
-        int toBeSelected = (int) (selectionRate * solutionsInEachGeneration);
         List<SudokuChromosome> sudokuChromosomeList = new ArrayList<>();
         SudokuChromosome.addAndRefreshProbabilityOfSelection(sudokuChromosomeList, inputSudokus);
-
         Collections.sort(sudokuChromosomeList, SudokuChromosome.SELECTION_PROBABILITY_COMPARATOR);
 
         sudokuChromosomeList.stream().forEach(e -> logger.debug(e.getProbabilityOfSelection()));
+
+        int toBeSelected = (int) (selectionRate * solutionsInEachGeneration);
         return SudokuChromosome.getSudokuList(sudokuChromosomeList).subList(0, toBeSelected);
     }
 

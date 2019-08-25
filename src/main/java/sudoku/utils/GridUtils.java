@@ -235,6 +235,33 @@ public final class GridUtils {
         return sudokuGrid;
     }
 
+    public static void setInnerGridUsingList(Sudoku sudoku, int innerGridNumber, List<Integer> list) {
+        int dimensionOfGrid = sudoku.getDimensionOfGrid();
+        int dimensionOfInnerGrid = (int) NumberUtils.getSqureRoot(dimensionOfGrid);
+
+        int Y = innerGridNumber % dimensionOfInnerGrid;
+        int X = innerGridNumber / dimensionOfInnerGrid;
+        int startXIndex = X * dimensionOfInnerGrid;
+        int startYIndex = Y * dimensionOfInnerGrid;
+
+        int counter = 0;
+        for (int i = startXIndex; i < startXIndex + dimensionOfInnerGrid; i++) {
+            for (int j = startYIndex; j < startYIndex + dimensionOfInnerGrid; j++) {
+                sudoku.setCellValue(i, j, list.get(counter++));
+            }
+        }
+    }
+
+    public static List<List<Integer>> getEmptyGrid(int dimension) {
+        List<List<Integer>> grid = new ArrayList<>(dimension);
+        for (int i = 0; i < dimension; i++) {
+            List<Integer> list = new ArrayList<>(9);
+            for (int j = 0; j < dimension; j++) list.add(EMPTY_CELL_VALUE);
+            grid.add(list);
+        }
+        return grid;
+    }
+
     /**
      * This method is used to get the grid represented by the string. <br>
      * For example <br>

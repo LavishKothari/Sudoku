@@ -16,7 +16,7 @@ public class WeightedRandomSelector<T extends WeightedEntity> implements Supplie
     @Override
     public T get() {
         double weightSum = elements.stream()
-                .mapToDouble(x -> x.getWeight())
+                .mapToDouble(WeightedEntity::getWeight)
                 .reduce(0.0, (x, y) -> x + y);
         /*
          * for a good distribution we can shuffle. but running it shows that shuffle

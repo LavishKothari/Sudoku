@@ -12,7 +12,7 @@ public class SudokuChromosomeTest {
     @Test
     public void test() {
         Sudoku sudoku = Sudoku.getPartiallyFilledSudokuPuzzle(9);
-        List<Sudoku> sudokuList = SudokuUtilForGeneticAlgorithm.getRandomMayBeInvalidConformingSudokuList(100, sudoku);
+        List<Sudoku> sudokuList = SudokuGeneticAlgorithmUtils.getRandomMayBeInvalidConformingSudokuList(100, sudoku);
 
         List<SudokuChromosome> sudokuChromosomeList = new ArrayList<>();
         SudokuChromosome.addAndRefreshProbabilityOfSelection(sudokuChromosomeList, sudokuList);
